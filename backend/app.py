@@ -22,6 +22,7 @@ def entry_to_dict(entry): return {'id': entry.id, 'text': entry.text, 'table_id'
 # GET endpoints
 @app.route('/boards/<string:user_email>', methods=['GET'])
 def boards(user_email):
+    print(user_email)
     boards = get_boards_by_email(user_email)
 
     if not boards:
@@ -29,7 +30,9 @@ def boards(user_email):
 
     board_list = [board_to_dict(board) for board in boards]
 
-    return jsonify({'boards': board_list})
+    response = jsonify(board_list)
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
 
 
 @app.route('/boards/<int:board_id>/tables', methods=['GET'])
@@ -39,22 +42,9 @@ def tables(board_id):
     if not tables:
         return jsonify({'error': 'No tables found for the given board ID'}), 404
 
-    table_list = [table_to_dict(table) for table in tables]
-
-    return jsonify({'tables': table_list})
-
-
-@app.route('/tables/<int:table_id>/entries', methods=['GET'])
-def entries(table_id):
-    entries = get_entries(table_id)
-
-    if not entries:
-        return jsonify({'error': 'No entries found for the given table ID'}), 404
-
-    entry_list = [entry_to_dict(entry) for entry in entries]
-
-    return jsonify({'entries': entry_list})
-
+    response = jsonify(tables)
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
 
 
 # POST endpoints

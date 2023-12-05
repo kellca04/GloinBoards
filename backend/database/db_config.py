@@ -27,7 +27,7 @@ class Table(Base):
     name = Column(String)
     board_id = Column(Integer, ForeignKey('Board.id'))  # Foreign key relationship
     board = relationship('Board', back_populates='tables')  # Bidirectional relationship
-    entries = relationship('Entry', back_populates='table')  # Bidirectional relationship
+    entries = relationship('Entry', back_populates='table', lazy='joined')  # Bidirectional relationship
 
 
 # Define the Board class inheriting from Base

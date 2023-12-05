@@ -1,6 +1,6 @@
 from sqlalchemy import create_engine, Column, Integer, String, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, relationship
+from sqlalchemy.orm import sessionmaker, relationship, joinedload
 
 from database.db_config import *
 
@@ -90,7 +90,7 @@ def get_boards_by_email(email):
     Session = sessionmaker(bind=engine)
     session = Session()
 
-    boards = session.query(Board).filter(Board.emails.contains([email])).all()
+    boards = session.query(Board).filter(Board.emails.contains(email)).all()
     session.close()
 
     return boards
@@ -100,10 +100,19 @@ def get_tables(board_id):
     Session = sessionmaker(bind=engine)
     session = Session()
 
-    tables = session.query(Table).filter_by(board_id=board_id).all()
-    session.close()
+    tables = session.query(Table).options(joinedload(Table.entries)).filter_by(board_id=board_id).all()
 
-    return tables
+    tables_with_entries = []
+    for table in tables:
+        table_data = {
+            'id': table.id,
+            'name': table.name,
+            'entries': [{'id': entry.id, 'text': entry.text} for entry in table.entries]
+        }
+        tables_with_entries.append(table_data)
+
+    session.close()
+    return tables_with_entries
 
 
 def get_entries(table_id):
