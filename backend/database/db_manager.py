@@ -5,6 +5,8 @@ from sqlalchemy.orm import sessionmaker, relationship
 from database.db_config import *
 
 
+Session = sessionmaker(bind=engine)
+
 
 def insert_test_data():
     Session = sessionmaker(bind=engine)
@@ -93,6 +95,7 @@ def get_boards():
 
     return boards
 
+
 def get_tables(board_id):
     Session = sessionmaker(bind=engine)
     session = Session()
@@ -101,6 +104,7 @@ def get_tables(board_id):
     session.close()
 
     return tables
+
 
 def get_entries(table_id):
     Session = sessionmaker(bind=engine)
@@ -111,3 +115,64 @@ def get_entries(table_id):
     
     return entries
 
+
+# Define functions for modifying data
+def upsert_board(name, board_id=None):
+    session = Session()
+    if board_id:
+        board = session.query(Board).filter_by(id=board_id).first()
+        if board:
+            board.name = name
+    else:
+        new_board = Board(name=name)
+        session.add(new_board)
+    session.commit()
+    session.close()
+
+
+def upsert_table(board_id, name, table_id=None):
+    session = Session()
+    board = session.query(Board).filter_by(id=board_id).first()
+    if not board:
+        session.close()
+        return
+    
+    if table_id:
+        table = session.query(Table).filter_by(id=table_id).first()
+        if table:
+            table.name = name
+    else:
+        new_table = Table(name=name, board=board)
+        session.add(new_table)
+    session.commit()
+    session.close()
+
+
+def upsert_entry(table_id, text, entry_id=None):
+    session = Session()
+    table = session.query(Table).filter_by(id=table_id).first()
+    if not table:
+        session.close()
+        return
+    
+    if entry_id:
+        entry = session.query(Entry).filter_by(id=entry_id).first()
+        if entry:
+            entry.text = text
+    else:
+        new_entry = Entry(text=text, table=table)
+        session.add(new_entry)
+    session.commit()
+    session.close()
+
+
+def update_entry_table(entry_id, new_table_id):
+    session = Session()
+    entry = session.query(Entry).filter_by(id=entry_id).first()
+    new_table = session.query(Table).filter_by(id=new_table_id).first()
+
+    if entry and new_table:
+        entry.table_id = new_table_id
+        session.commit()
+    
+    session.close()
