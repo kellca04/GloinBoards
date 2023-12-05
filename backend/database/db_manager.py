@@ -13,7 +13,7 @@ def insert_test_data():
     session = Session()
 
     # Creating a single board
-    board_main = Board(name='Main Board')
+    board_main = Board(name='Main Board', emails=["grunet01@luther.edu", "kellca04@luther.edu"])
 
     # Tables for 'Main Board'
     table_todo = Table(name='To-Do', board=board_main)
@@ -61,7 +61,7 @@ def view_data():
     # Query and print data from the tables
     print("Boards:")
     for board in session.query(Board).all():
-        print(f"Board ID: {board.id}, Name: {board.name}")
+        print(f"Board ID: {board.id}, Name: {board.name}, Emails: {board.emails}")
         print("Tables:")
         for table in board.tables:
             print(f"  Table ID: {table.id}, Name: {table.name}")
@@ -86,11 +86,11 @@ def clear_database():
 
 
 # Define functions for retrieving data
-def get_boards():
+def get_boards_by_email(email):
     Session = sessionmaker(bind=engine)
     session = Session()
 
-    boards = session.query(Board).all()
+    boards = session.query(Board).filter(Board.emails.contains([email])).all()
     session.close()
 
     return boards

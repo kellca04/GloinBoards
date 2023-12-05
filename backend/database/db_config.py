@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Column, Integer, String, ForeignKey
+from sqlalchemy import JSON, create_engine, Column, Integer, String, ForeignKey
 from sqlalchemy.orm import sessionmaker, relationship, declarative_base
 
 
@@ -36,6 +36,7 @@ class Board(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(String)
+    emails = Column(JSON)
     tables = relationship('Table', back_populates='board')  # One-to-many relationship
 
 

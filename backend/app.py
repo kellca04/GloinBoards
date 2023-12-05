@@ -5,8 +5,14 @@ from database.db_manager import *
 app = Flask(__name__)
 
 
+#initialize_database()
+#clear_database()
+#insert_test_data()
+view_data()
+
+
 # Helper functions
-def board_to_dict(board): return {'id': board.id, 'name': board.name}
+def board_to_dict(board): return {'id': board.id, 'name': board.name, 'emails': board.emails}
 
 def table_to_dict(table): return {'id': table.id, 'name': table.name}
 
@@ -14,9 +20,9 @@ def entry_to_dict(entry): return {'id': entry.id, 'text': entry.text, 'table_id'
 
 
 # GET endpoints
-@app.route('/boards', methods=['GET'])
-def boards():
-    boards = get_boards()
+@app.route('/boards/<string:user_email>', methods=['GET'])
+def boards(user_email):
+    boards = get_boards_by_email(user_email)
 
     if not boards:
         return jsonify({'error': 'No boards found'}), 404
