@@ -1,3 +1,4 @@
+const requestScriptPath = '/request.js'
 
 var boards = null;
 var selectedBoard = null;
@@ -5,7 +6,7 @@ var tables = null;
 
 
 // Initialize list of all boards for current user
-import('/frontend/request.js')
+import(requestScriptPath)
   .then(module => {
     const apiRequests = module.default;
     const userEmail = "grunet01@luther.edu" //change later to use oauth
@@ -39,7 +40,7 @@ function setCurrentBoard(boardId) {
 
 function updateAndRenderTables() {
 
-  import('/frontend/request.js')
+  import(requestScriptPath)
     .then(module => {
 
       const apiRequests = module.default;
@@ -66,6 +67,8 @@ function updateAndRenderTables() {
 
 
 function renderBoard() {
+  
+  $('.row').empty();
 
   for (table of tables) {
 
@@ -89,7 +92,7 @@ function renderBoard() {
           </div>
           <div class="card-body">
             <button class="btn btn-primary add">Add Element</button>
-            <button class="btn btn-danger delete-table">Delete Table</button>
+            <button class="btn btn-danger delete-table" onclick="removeTable(${table.id}, this)">Delete Table</button>
             <ul id="${table.id}" class="list-group">
               ${entriesHtml}
             </ul>
@@ -117,15 +120,12 @@ function renderBoard() {
 
   }
 
-  bindAddButton();
-  bindDeleteTableButton();
-
 }
 
 
-function addTable() {
+function addTable(element) {
 
-  import('/frontend/request.js')
+  import(requestScriptPath)
     .then(module => {
 
       const apiRequests = module.default;
@@ -150,31 +150,33 @@ function addTable() {
 }
 
 
-function bindAddButton() {
-  $('.add').off('click').on('click', function () {
-    const listId = $(this).parent().find('ul').attr('id');
-    const itemId = 'item' + listId + '.' + (lists[listId].length + 1);
-    lists[listId].push(itemId);
+function removeTable(tableId, element) {
 
-    const newElement = $('<li class="list-group-item" data-placeholder="New Element..." onclick="editItem(this)"></li>');
-    $('#' + listId).append(newElement);
+  import(requestScriptPath)
+    .then(module => {
 
-    newElement.html('&nbsp;');
-    newElement.append('<span class="delete-item" onclick="deleteItem(this)">X</span>');
-  });
+      const apiRequests = module.default;
+
+      if (selectedBoard != null) {
+        apiRequests.deleteTable(tableId)
+          .then(_ => {
+
+            $(element).parents('.col-md-4').remove();
+
+          })
+          .catch(error => {
+            console.error('Error deleting table:', error);
+          });
+      }
+
+    })
+    .catch(error => {
+      console.error('Failed to load module:', error);
+    });
+
 }
 
-function bindDeleteTableButton() {
-  $('.delete-table').off('click').on('click', function () {
-    const tableId = $(this).parent().find('ul').attr('id');
-    delete lists[tableId];
-    $(this).parents('.col-md-4').remove();
-  });
-}
 
-function deleteItem(el) {
-  $(el).parent().remove();
-}
 
 function editItem(entryId, element) {
   const listItem = $(element).eq(0);
@@ -195,7 +197,6 @@ function editItem(entryId, element) {
 }
 
 $(document).ready(() => {
-  bindAddButton();
 
   const drake = dragula([document.getElementById('table1')]);
 

@@ -185,3 +185,35 @@ def update_entry_table(entry_id, new_table_id):
         session.commit()
     
     session.close()
+
+
+# Define functions for removing data
+def remove_board(board_id):
+    session = Session()
+    board = session.query(Board).filter_by(id=board_id).first()
+
+    if board:
+        session.delete(board)
+        session.commit()
+
+    session.close()
+
+def remove_table(table_id):
+    session = Session()
+    table = session.query(Table).filter_by(id=table_id).first()
+
+    if table:
+        session.delete(table)
+        session.commit()
+
+    session.close()
+
+def remove_entry(entry_id):
+    session = Session()
+    entry = session.query(Entry).filter_by(id=entry_id).first()
+
+    if entry:
+        session.delete(entry)
+        session.commit()
+
+    session.close()

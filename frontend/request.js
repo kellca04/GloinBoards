@@ -75,6 +75,51 @@ const apiRequests = {
     const response = await fetch(url);
     return await response.json();
   },
+
+  async deleteBoard(boardId) {
+    const url = `${BASE_URL}/boards/${boardId}`;
+    const requestOptions = {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' }
+    };
+
+    const response = await fetch(url, requestOptions);
+    if (response.ok) {
+      return { message: 'Board removed successfully' };
+    } else {
+      throw new Error('Failed to remove board');
+    }
+  },
+
+  async deleteTable(tableId) {
+    const url = `${BASE_URL}/tables/${tableId}`;
+    const requestOptions = {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' }
+    };
+
+    const response = await fetch(url, requestOptions);
+    if (response.ok) {
+      return { message: 'Table removed successfully' };
+    } else {
+      throw new Error('Failed to remove table');
+    }
+  },
+
+  async deleteEntry(entryId) {
+    const url = `${BASE_URL}/entries/${entryId}`;
+    const requestOptions = {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' }
+    };
+
+    const response = await fetch(url, requestOptions);
+    if (response.ok) {
+      return { message: 'Entry removed successfully' };
+    } else {
+      throw new Error('Failed to remove entry');
+    }
+  }
 };
 
 export default apiRequests;

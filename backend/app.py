@@ -9,17 +9,14 @@ CORS(app)
 
 
 #initialize_database()
-#clear_database()
-#insert_test_data()
+clear_database()
+insert_test_data()
 view_data()
 
 
 # Helper functions
 def board_to_dict(board): return {'id': board.id, 'name': board.name, 'emails': board.emails}
 
-def table_to_dict(table): return {'id': table.id, 'name': table.name}
-
-def entry_to_dict(entry): return {'id': entry.id, 'text': entry.text, 'table_id': entry.table_id}
 
 
 # GET endpoints
@@ -41,9 +38,6 @@ def boards(user_email):
 @app.route('/boards/<int:board_id>/tables', methods=['GET'])
 def tables(board_id):
     tables = get_tables(board_id)
-
-    if not tables:
-        return jsonify({'error': 'No tables found for the given board ID'}), 404
 
     response = jsonify(tables)
     response.headers.add('Access-Control-Allow-Origin', '*')
@@ -93,12 +87,39 @@ def upsert_entry_endpoint():
 def move_entry_to_table_endpoint(entry_id):
     new_table_id = request.json.get('new_table_id')
 
-    change_entry_table(entry_id, new_table_id)
+    update_entry_table(entry_id, new_table_id)
 
     response = jsonify({'message': 'Entry moved to new table successfully'})
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
 
+
+# DELETE Endpoints
+@app.route('/boards/<int:board_id>', methods=['DELETE'])
+def delete_board(board_id):
+    remove_board(board_id)
+
+    response = jsonify({'message': 'Board removed successfully'})
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
+
+
+@app.route('/tables/<int:table_id>', methods=['DELETE'])
+def delete_table(table_id):
+    remove_table(table_id)
+
+    response = jsonify({'message': 'Table removed successfully'})
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
+
+
+@app.route('/entries/<int:entry_id>', methods=['DELETE'])
+def delete_entry(entry_id):
+    remove_entry(entry_id)
+
+    response = jsonify({'message': 'Entry removed successfully'})
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
 
 if __name__ == "__main__":
     app.run(debug=True)
