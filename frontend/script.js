@@ -115,7 +115,11 @@ function addTableElement(table) {
           <ul id="${table.id}" class="list-group">
             ${entriesHtml}
           </ul>
-          <button class="btn btn-primary add w-100 text-align-center">
+          <button 
+            id="${table.id}-add"
+            class="btn btn-primary add w-100 text-align-center" 
+            onclick="addEntry(${table.id}, this)"
+          >
             <h5 class="my-auto">
               <i class="mt-1 bi bi-plus-circle"></i>
             </h5>
@@ -147,6 +151,43 @@ function addTableElement(table) {
 }
 
 
+function addEntry(table_id, table_element) {
+
+  import(requestScriptPath)
+    .then(module => {
+
+      const apiRequests = module.default;
+
+      if (selectedBoard != null) {
+
+        unspecified_id = "UNSPECIFIED-ENTRY-" + Math.floor(Math.random() * 1000).toString();
+
+        apiRequests.upsertEntry(table_id, "New Task")
+          .then(new_entry => {
+
+            entry_element = $(`#${unspecified_id}`);
+            entry_element.attr("id", new_entry.id);
+
+          })
+          .catch(error => {
+            console.error('Error adding table:', error);
+          });
+      }
+
+    })
+    .catch(error => {
+      console.error('Failed to load module:', error);
+    });
+
+  entryHtml = `
+    <li class="list-group-item">
+      <div class="w-90" ondblclick="editItem(${entry.id}, this)">${entry.text}</div>
+      <span class="delete-item" onclick="deleteItem(${entry.id})">X</span>
+    </li>`
+
+}
+
+
 function generateAddTableButton() {
 
   if ($("#addTable").length > 0) {
@@ -166,11 +207,10 @@ function generateAddTableButton() {
 
   $(".row").append(addTableButton);
   
-  console.log("Add button generated");
 }
 
 
-function addTable(element) {
+function addTable() {
 
   import(requestScriptPath)
     .then(module => {
@@ -196,6 +236,10 @@ function addTable(element) {
             delete_button = $(`#${unspecified_id}-rm`);
             delete_button.attr("id", new_table.id);
             delete_button.attr("onclick", `removeTable(${new_table.id}, this)`)
+
+            add_button = $(`#${unspecified_id}-add`);
+            add_button.attr("id", new_table.id);
+            addd_button.attr("onclick", `addEntry(${new_table.id}, this)`)
 
           })
           .catch(error => {
