@@ -76,6 +76,8 @@ function renderBoard() {
 
   }
 
+  generateAddTableButton();
+
 }
 
 
@@ -100,22 +102,23 @@ function addTableElement(table) {
     <div class="col-md-4">
       <div class="card position-relative">
         <button 
-          class="w-auto btn btn-primary btn-sm position-absolute top-0 end-0 mx-2 my-3"
+          class="w-auto btn btn-sm btn-primary position-absolute m-2"
           id="${table.id}-rm"
           onclick="removeTable(${table.id}, this)"
         >
           <i class="bi bi-trash"></i>
         </button>
         <div class="card-header">
-          <h2 contenteditable="true">${table.name}</h2>
+          <h4 contenteditable="true">${table.name}</h4>
         </div>
         <div class="card-body">
           <ul id="${table.id}" class="list-group">
             ${entriesHtml}
           </ul>
           <button class="btn btn-primary add w-100 text-align-center">
-            <i class="mt-1 bi bi-plus-circle"></i>
-            New Task
+            <h5 class="my-auto">
+              <i class="mt-1 bi bi-plus-circle"></i>
+            </h5>
           </button>
         </div>
       </div>
@@ -139,6 +142,31 @@ function addTableElement(table) {
     }
   });
 
+  generateAddTableButton();
+
+}
+
+
+function generateAddTableButton() {
+
+  if ($("#addTable").length > 0) {
+    $("#addTable").remove();
+  }
+
+  addTableButton = `
+    <div class="col-md-4" id="addTable">
+      <div class="card position-relative" id="addTableCard">
+        <button class="btn btn-primary btn-lg w-100 h-100 mb-0" onclick="addTable()">
+          <h2 class="my-auto">
+            <i class="bi bi-plus-circle"></i>
+          <h2>
+        </button>
+      </div>
+    </div>`
+
+  $(".row").append(addTableButton);
+  
+  console.log("Add button generated");
 }
 
 

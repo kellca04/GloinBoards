@@ -97,28 +97,15 @@ body {
   transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
 }
 
+#addTableCard {
+  height: 150px;
+}
+
 .btn-primary:hover,
 .btn-danger:hover,
 .btn-success:hover {
   background-color: #7b241c; 
   box-shadow: 0 8px 16px rgba(255, 255, 255, 0.5); 
-}
-
-#addTable {
-  width: 100%;
-  margin-top: 20px;
-  background-color: #7b241c;
-  border: 2px solid #641e16;
-  color: #fff;
-  padding: 15px;
-  border-radius: 8px;
-  text-align: center;
-  transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-}
-
-#addTable:hover {
-  background-color: #641e16;
-  box-shadow: 0 8px 16px rgba(255, 255, 255, 0.5);
 }
 
 .navbar {
