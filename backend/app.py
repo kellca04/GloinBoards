@@ -17,7 +17,7 @@ view_data()
 # Helper functions
 def board_to_dict(board): return {'id': board.id, 'name': board.name, 'emails': board.emails}
 def table_to_dict(table): return {'id': table.id, 'name': table.name}
-
+def entry_to_dict(entry): return {'id': entry.id, 'text': entry.text}
 
 
 # GET endpoints
@@ -79,7 +79,7 @@ def upsert_entry_endpoint():
 
     newEntry = upsert_entry(table_id, text, entry_id)
 
-    response = jsonify({"new_entry": newEntry})
+    response = jsonify(entry_to_dict(newEntry))
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
 

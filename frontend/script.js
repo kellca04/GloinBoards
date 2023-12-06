@@ -90,7 +90,7 @@ function addTableElement(table) {
     for (entry of table.entries) {
 
       entriesHtml += `
-        <li class="list-group-item">
+        <li class="list-group-item" id="entry-${entry.id}">
           <div class="w-90" ondblclick="editItem(${entry.id}, this)">${entry.text}</div>
           <span class="delete-item" onclick="deleteItem(${entry.id})">X</span>
         </li>`
@@ -103,7 +103,7 @@ function addTableElement(table) {
       <div class="card position-relative">
         <button 
           class="w-auto btn btn-sm btn-primary position-absolute m-2"
-          id="${table.id}-rm"
+          id="table-${table.id}-rm"
           onclick="removeTable(${table.id}, this)"
         >
           <i class="bi bi-trash"></i>
@@ -112,11 +112,11 @@ function addTableElement(table) {
           <h4 contenteditable="true">${table.name}</h4>
         </div>
         <div class="card-body">
-          <ul id="${table.id}" class="list-group">
+          <ul id="table-${table.id}" class="list-group">
             ${entriesHtml}
           </ul>
           <button 
-            id="${table.id}-add"
+            id="table-${table.id}-add"
             class="btn btn-primary add w-100 text-align-center" 
             onclick="addEntry(${table.id}, this)"
           >
@@ -162,11 +162,38 @@ function addEntry(table_id, table_element) {
 
         unspecified_id = "UNSPECIFIED-ENTRY-" + Math.floor(Math.random() * 1000).toString();
 
+        const table = $(`#table-${table_id}`)
+        table.append(`
+          <li class="list-group-item" id="entry-${unspecified_id}">
+            <div 
+              class="w-90" 
+              id="entry-${unspecified_id}-edit"
+              ondblclick="editItem(${unspecified_id}, this)">
+              New Task
+            </div>
+            <span 
+              class="delete-item" 
+              id="entry-${unspecified_id}-rm"
+              onclick="deleteItem(${unspecified_id})">
+              X
+            </span>
+          </li>
+        `)
+
         apiRequests.upsertEntry(table_id, "New Task")
           .then(new_entry => {
 
-            entry_element = $(`#${unspecified_id}`);
-            entry_element.attr("id", new_entry.id);
+            entry_element = $(`#entry-${unspecified_id}`);
+            entry_element.attr("id", `entry${new_entry.id}`);
+
+            edit_entry = $(`#entry-${unspecified_id}-edit`);
+            edit_entry.attr("id", "");
+            edit_entry.attr("onclick", `editItem(${new_entry.id})`)
+
+
+            rm_entry = $(`#entry-${unspecified_id}-rm`);
+            edit_entry.attr("id", "");
+            edit_entry.attr("onclick", `deleteItem(${new_entry.id})`)
 
           })
           .catch(error => {
@@ -230,15 +257,15 @@ function addTable() {
         apiRequests.upsertTable(selectedBoard.id, "New Table")
           .then(new_table => {
 
-            new_ul = $(`#${unspecified_id}`);
+            new_ul = $(`table-#${unspecified_id}`);
             new_ul.attr("id", new_table.id);
 
-            delete_button = $(`#${unspecified_id}-rm`);
-            delete_button.attr("id", new_table.id);
+            delete_button = $(`table-#${unspecified_id}-rm`);
+            delete_button.attr("id", `table-${new_table.id}-rm`);
             delete_button.attr("onclick", `removeTable(${new_table.id}, this)`)
 
-            add_button = $(`#${unspecified_id}-add`);
-            add_button.attr("id", new_table.id);
+            add_button = $(`#table-${unspecified_id}-add`);
+            add_button.attr("id", `table-${new_table.id}-add`);
             addd_button.attr("onclick", `addEntry(${new_table.id}, this)`)
 
           })
