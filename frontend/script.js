@@ -1,4 +1,4 @@
-const requestScriptPath = '/request.js'
+const requestScriptPath = './request.js'
 
 var boards = null;
 var selectedBoard = null;
