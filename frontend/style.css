@@ -140,7 +140,7 @@ body {
 .container {
   width: 75%;
   position: relative;
-  margin-left: 5%;
+  margin-left: 3%;
 }
 
 .row {
@@ -148,7 +148,7 @@ body {
 }
 
 .live-chat-placeholder {
-  width: 15%;
+  width: 20%;
   height: 100vh;
   background-color: #808080;
   position: fixed;
@@ -168,4 +168,141 @@ button#addTable {
 
 .w-90 {
   width: 90%;
+}
+
+.user-chat {
+  background-color: #fff;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  border-left: 2px solid #808080;
+}
+
+.chat-header {
+  background-color: #808080;
+  color: #fff;
+  padding: 10px;
+  text-align: center;
+}
+
+.chat-body {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 10px;
+}
+
+.chat-input {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+}
+
+#userNameInput,
+#messageInput {
+  flex-grow: 1;
+  margin-right: 10px;
+}
+
+#sendMessageBtn {
+  background-color: #7b241c;
+  color: #fff;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+}
+
+#sendMessageBtn:hover {
+  background-color: #641e16;
+}
+
+#liveChatContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-width: 300px; 
+  margin: auto; 
+}
+
+#messages {
+  flex-grow: 1;
+  overflow-y: auto;
+  background: #000;
+  color: #fff;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+#sendMsg {
+  display: flex;
+  flex-shrink: 0;
+  align-items: flex-end;
+  padding: 10px;
+  box-sizing: border-box;
+  background: #AAA;
+  max-width: 100%;
+}
+
+#msgTxt {
+  flex-grow: 1;
+  height: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+  border: none;
+  background: #fff;
+  border-radius: 5px 0 0 5px;
+}
+
+#msgBtn {
+  flex-grow: 0;
+  width: 20%;
+  max-width: 100px; 
+  height: 100%;
+  background: #7b241c;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  border-radius: 0 5px 5px 0;
+  transition: background-color 0.3s ease-in-out;
+}
+
+#msgBtn:hover {
+  background-color: #641e16;
+}
+
+.outer {
+  width: 100%;
+  margin-top: 10px;
+  display: flex;
+}
+
+#inner {
+  padding: 10px;
+  box-sizing: border-box;
+  border-radius: 10px;
+}
+
+.me {
+  background: #7b241c;
+  color: #fff;
+  align-self: flex-end;
+}
+
+.notMe {
+  background: #fff;
+  color: #000;
+  align-self: flex-start;
+}
+
+
+#dltMsg {
+  background: transparent;
+  border: none;
+  margin-left: 10px;
+  cursor: pointer;
+  color: #fff; 
+  transition: color 0.3s ease-in-out;
+}
+
+#dltMsg:hover {
+  color: #eee; 
 }
