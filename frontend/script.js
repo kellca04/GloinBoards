@@ -98,16 +98,25 @@ function addTableElement(table) {
 
   const newTableHtml = `
     <div class="col-md-4">
-      <div class="card">
+      <div class="card position-relative">
+        <button 
+          class="w-auto btn btn-primary btn-sm position-absolute top-0 end-0 mx-2 my-3"
+          id="${table.id}-rm"
+          onclick="removeTable(${table.id}, this)"
+        >
+          <i class="bi bi-trash"></i>
+        </button>
         <div class="card-header">
           <h2 contenteditable="true">${table.name}</h2>
         </div>
         <div class="card-body">
-          <button class="btn btn-primary add">Add Element</button>
-          <button class="btn btn-danger delete-table" onclick="removeTable(${table.id}, this)">Delete Table</button>
           <ul id="${table.id}" class="list-group">
             ${entriesHtml}
           </ul>
+          <button class="btn btn-primary add w-100 text-align-center">
+            <i class="mt-1 bi bi-plus-circle"></i>
+            New Task
+          </button>
         </div>
       </div>
     </div>`;
@@ -156,7 +165,8 @@ function addTable(element) {
             new_ul = $(`#${unspecified_id}`);
             new_ul.attr("id", new_table.id);
 
-            delete_button = new_ul.prev();
+            delete_button = $(`#${unspecified_id}-rm`);
+            delete_button.attr("id", new_table.id);
             delete_button.attr("onclick", `removeTable(${new_table.id}, this)`)
 
           })
