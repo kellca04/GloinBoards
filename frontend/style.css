@@ -165,3 +165,7 @@ button#addTable {
 .card {
   z-index: 1;
 }
+
+.w-90 {
+  width: 90%;
+}

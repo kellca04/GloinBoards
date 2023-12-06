@@ -41,8 +41,9 @@ function setCurrentBoard(boardId) {
         apiRequests.getTablesByBoardId(selectedBoard.id)
           .then(allTables => {
 
-            tables = allTables
-            
+            tables = allTables;
+            renderCurrentBoard();
+
           })
           .catch(error => {
             console.error('Error fetching data:', error);
@@ -53,6 +54,64 @@ function setCurrentBoard(boardId) {
     .catch(error => {
       console.error('Failed to load module:', error);
     });
+
+}
+
+
+function renderCurrentBoard() {
+
+  for (table of tables) {
+
+    var entriesHtml = '';
+
+    for (entry of table.entries) {
+
+      entriesHtml += `
+        <li class="list-group-item">
+          <div class="w-90" ondblclick="editItem(${entry.id}, this)">${entry.text}</div>
+          <span class="delete-item" onclick="deleteItem(${entry.id})">X</span>
+        </li>`
+
+    }
+
+    const newTableHtml = `
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-header">
+            <h2 contenteditable="true">${table.name}</h2>
+          </div>
+          <div class="card-body">
+            <button class="btn btn-primary add">Add Element</button>
+            <button class="btn btn-danger delete-table">Delete Table</button>
+            <ul id="${table.id}" class="list-group">
+              ${entriesHtml}
+            </ul>
+          </div>
+        </div>
+      </div>`;
+
+    $('.row').append(newTableHtml);
+    
+    const newDrake = dragula([...document.getElementsByClassName('list-group')]);
+
+    newDrake.on('drag', (el, source) => {
+      el.classList.add('list-group-item', 'placeholder');
+      if (el.innerText === '') {
+        el.innerText = '';
+      }
+    });
+
+    newDrake.on('dragend', (el) => {
+      el.classList.remove('placeholder');
+      if (el.innerText === '') {
+        el.innerText = 'New Element...';
+      }
+    });
+
+  }
+
+  bindAddButton();
+  bindDeleteTableButton();
 
 }
 
@@ -79,20 +138,12 @@ function bindDeleteTableButton() {
   });
 }
 
-function initializeLists() {
-  for (let listId in lists) {
-    lists[listId].forEach((item) => {
-      $('#' + listId).append('<li class="list-group-item" data-placeholder="' + item + '" onclick="editItem(this)">' + item + '<span class="delete-item" onclick="deleteItem(this)">X</span></li>');
-    });
-  }
-}
-
 function deleteItem(el) {
   $(el).parent().remove();
 }
 
-function editItem(el) {
-  const listItem = $(el);
+function editItem(entryId, element) {
+  const listItem = $(element).eq(0);
   const originalText = listItem.text().trim();
 
   listItem.attr('contenteditable', 'true');
@@ -100,8 +151,9 @@ function editItem(el) {
 
   listItem.off('blur').on('blur', function () {
     const trimmedText = $(this).text().trim();
+    console.log(trimmedText);
 
-    if (trimmedText === '') {
+    if (trimmedText === 'X') {
       listItem.remove();
     } else if (trimmedText === originalText && originalText === 'New Element...') {
       listItem.text('New Element...');
@@ -111,7 +163,6 @@ function editItem(el) {
 
 $(document).ready(() => {
   bindAddButton();
-  initializeLists();
 
   const drake = dragula([document.getElementById('table1')]);
 
@@ -130,10 +181,8 @@ $(document).ready(() => {
   });
 
   $('#addTable').on('click', () => {
-    const newTableId = 'table' + ($('.list-group').length + 1);
     const newTableHtml = '<div class="col-md-4"><div class="card"><div class="card-header"><h2 contenteditable="true">New Table</h2></div><div class="card-body"><button class="btn btn-primary add">Add Element</button><button class="btn btn-danger delete-table">Delete Table</button><ul id="' + newTableId + '" class="list-group"><li class="list-group-item" data-placeholder="New Element..." onclick="editItem(this)">&nbsp;<span class="delete-item" onclick="deleteItem(this)">X</span></li></ul></div></div></div>';
     $('.row').append(newTableHtml);
-    lists[newTableId] = [];
     
     const newDrake = dragula([...document.getElementsByClassName('list-group')]);
 
