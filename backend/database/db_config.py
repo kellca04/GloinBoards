@@ -1,7 +1,7 @@
 from sqlalchemy import JSON, create_engine, Column, Integer, String, ForeignKey
 from sqlalchemy.orm import sessionmaker, relationship, declarative_base
 
-
+# For local use
 db_url = "sqlite:///database/model.db"
 engine = create_engine(db_url, echo=False)
 
