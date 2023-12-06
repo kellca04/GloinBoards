@@ -29,8 +29,15 @@ import('/frontend/request.js')
 function setCurrentBoard(boardId) {
 
   selectedBoard = boards.find(function (b) {
-    return b.id == boardId
+    return b.id == boardId;
   });
+
+  updateAndRenderTables();
+
+}
+
+
+function updateAndRenderTables() {
 
   import('/frontend/request.js')
     .then(module => {
@@ -42,7 +49,7 @@ function setCurrentBoard(boardId) {
           .then(allTables => {
 
             tables = allTables;
-            renderCurrentBoard();
+            renderBoard();
 
           })
           .catch(error => {
@@ -58,7 +65,7 @@ function setCurrentBoard(boardId) {
 }
 
 
-function renderCurrentBoard() {
+function renderBoard() {
 
   for (table of tables) {
 
@@ -116,6 +123,33 @@ function renderCurrentBoard() {
 }
 
 
+function addTable() {
+
+  import('/frontend/request.js')
+    .then(module => {
+
+      const apiRequests = module.default;
+
+      if (selectedBoard != null) {
+        apiRequests.upsertTable(selectedBoard.id, "New Table")
+          .then(_ => {
+
+            updateAndRenderTables();
+
+          })
+          .catch(error => {
+            console.error('Error adding table:', error);
+          });
+      }
+
+    })
+    .catch(error => {
+      console.error('Failed to load module:', error);
+    });
+
+}
+
+
 function bindAddButton() {
   $('.add').off('click').on('click', function () {
     const listId = $(this).parent().find('ul').attr('id');
@@ -151,7 +185,6 @@ function editItem(entryId, element) {
 
   listItem.off('blur').on('blur', function () {
     const trimmedText = $(this).text().trim();
-    console.log(trimmedText);
 
     if (trimmedText === 'X') {
       listItem.remove();
@@ -180,27 +213,4 @@ $(document).ready(() => {
     }
   });
 
-  $('#addTable').on('click', () => {
-    const newTableHtml = '<div class="col-md-4"><div class="card"><div class="card-header"><h2 contenteditable="true">New Table</h2></div><div class="card-body"><button class="btn btn-primary add">Add Element</button><button class="btn btn-danger delete-table">Delete Table</button><ul id="' + newTableId + '" class="list-group"><li class="list-group-item" data-placeholder="New Element..." onclick="editItem(this)">&nbsp;<span class="delete-item" onclick="deleteItem(this)">X</span></li></ul></div></div></div>';
-    $('.row').append(newTableHtml);
-    
-    const newDrake = dragula([...document.getElementsByClassName('list-group')]);
-
-    newDrake.on('drag', (el, source) => {
-      el.classList.add('list-group-item', 'placeholder');
-      if (el.innerText === '') {
-        el.innerText = '';
-      }
-    });
-
-    newDrake.on('dragend', (el) => {
-      el.classList.remove('placeholder');
-      if (el.innerText === '') {
-        el.innerText = 'New Element...';
-      }
-    });
-
-    bindAddButton();
-    bindDeleteTableButton();
-  });
 });

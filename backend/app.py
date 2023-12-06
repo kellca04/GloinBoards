@@ -1,8 +1,11 @@
 from flask import Flask, jsonify, request
+from flask_cors import CORS
+
 
 from database.db_manager import *
 
 app = Flask(__name__)
+CORS(app)
 
 
 #initialize_database()
@@ -54,7 +57,10 @@ def upsert_board_endpoint():
     board_id = request.json.get('board_id')  # For updates
 
     upsert_board(name, board_id)
-    return jsonify({'message': 'Board upserted successfully'})
+
+    response = jsonify({'message': 'Board upserted successfully'})
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
 
 
 @app.route('/tables', methods=['POST'])
@@ -64,7 +70,10 @@ def upsert_table_endpoint():
     table_id = request.json.get('table_id')  # For updates
 
     upsert_table(board_id, name, table_id)
-    return jsonify({'message': 'Table upserted successfully'})
+
+    response = jsonify({'message': 'Table upserted successfully'})
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
 
 
 @app.route('/entries', methods=['POST'])
@@ -74,7 +83,10 @@ def upsert_entry_endpoint():
     entry_id = request.json.get('entry_id')  # For updates
 
     upsert_entry(table_id, text, entry_id)
-    return jsonify({'message': 'Entry upserted successfully'})
+
+    response = jsonify({'message': 'Entry upserted successfully'})
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
 
 
 @app.route('/entries/<int:entry_id>/move', methods=['PUT'])
@@ -82,7 +94,10 @@ def move_entry_to_table_endpoint(entry_id):
     new_table_id = request.json.get('new_table_id')
 
     change_entry_table(entry_id, new_table_id)
-    return jsonify({'message': 'Entry moved to new table successfully'})
+
+    response = jsonify({'message': 'Entry moved to new table successfully'})
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
 
 
 if __name__ == "__main__":
