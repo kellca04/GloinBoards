@@ -1,4 +1,4 @@
-const requestScriptPath = '/request.js'
+const requestScriptPath = 'request.js'
 
 var boards = null;
 var selectedBoard = null;
@@ -6,7 +6,7 @@ var tables = null;
 
 
 // Initialize list of all boards for current user
-import('request.js')
+import(requestScriptPath)
   .then(module => {
     const apiRequests = module.default;
     const userEmail = "grunet01@luther.edu" //change later to use oauth
@@ -40,7 +40,7 @@ function setCurrentBoard(boardId) {
 
 function updateAndRenderTables() {
 
-  import('request.js')
+  import(requestScriptPath)
     .then(module => {
 
       const apiRequests = module.default;
@@ -172,7 +172,7 @@ function generateAddTableButton() {
 
 function addTable(element) {
 
-  import('request.js')
+  import(requestScriptPath)
     .then(module => {
 
       const apiRequests = module.default;
@@ -213,7 +213,7 @@ function addTable(element) {
 
 function removeTable(tableId, element) {
 
-  import('request.js')
+  import(requestScriptPath)
     .then(module => {
 
       const apiRequests = module.default;
