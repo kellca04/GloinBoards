@@ -16,6 +16,7 @@ view_data()
 
 # Helper functions
 def board_to_dict(board): return {'id': board.id, 'name': board.name, 'emails': board.emails}
+def table_to_dict(table): return {'id': table.id, 'name': table.name}
 
 
 
@@ -63,9 +64,9 @@ def upsert_table_endpoint():
     name = request.json.get('name')
     table_id = request.json.get('table_id')  # For updates
 
-    upsert_table(board_id, name, table_id)
+    newTable = upsert_table(board_id, name, table_id)
 
-    response = jsonify({'message': 'Table upserted successfully'})
+    response = jsonify(table_to_dict(newTable))
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
 
@@ -76,9 +77,9 @@ def upsert_entry_endpoint():
     text = request.json.get('text')
     entry_id = request.json.get('entry_id')  # For updates
 
-    upsert_entry(table_id, text, entry_id)
+    newEntry = upsert_entry(table_id, text, entry_id)
 
-    response = jsonify({'message': 'Entry upserted successfully'})
+    response = jsonify({"new_entry": newEntry})
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
 

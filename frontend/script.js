@@ -72,7 +72,18 @@ function renderBoard() {
 
   for (table of tables) {
 
-    var entriesHtml = '';
+    addTableElement(table);
+
+  }
+
+}
+
+
+function addTableElement(table) {
+
+  var entriesHtml = '';
+
+  if (table.entries) {
 
     for (entry of table.entries) {
 
@@ -81,44 +92,43 @@ function renderBoard() {
           <div class="w-90" ondblclick="editItem(${entry.id}, this)">${entry.text}</div>
           <span class="delete-item" onclick="deleteItem(${entry.id})">X</span>
         </li>`
-
+  
     }
-
-    const newTableHtml = `
-      <div class="col-md-4">
-        <div class="card">
-          <div class="card-header">
-            <h2 contenteditable="true">${table.name}</h2>
-          </div>
-          <div class="card-body">
-            <button class="btn btn-primary add">Add Element</button>
-            <button class="btn btn-danger delete-table" onclick="removeTable(${table.id}, this)">Delete Table</button>
-            <ul id="${table.id}" class="list-group">
-              ${entriesHtml}
-            </ul>
-          </div>
-        </div>
-      </div>`;
-
-    $('.row').append(newTableHtml);
-    
-    const newDrake = dragula([...document.getElementsByClassName('list-group')]);
-
-    newDrake.on('drag', (el, source) => {
-      el.classList.add('list-group-item', 'placeholder');
-      if (el.innerText === '') {
-        el.innerText = '';
-      }
-    });
-
-    newDrake.on('dragend', (el) => {
-      el.classList.remove('placeholder');
-      if (el.innerText === '') {
-        el.innerText = 'New Element...';
-      }
-    });
-
   }
+
+  const newTableHtml = `
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-header">
+          <h2 contenteditable="true">${table.name}</h2>
+        </div>
+        <div class="card-body">
+          <button class="btn btn-primary add">Add Element</button>
+          <button class="btn btn-danger delete-table" onclick="removeTable(${table.id}, this)">Delete Table</button>
+          <ul id="${table.id}" class="list-group">
+            ${entriesHtml}
+          </ul>
+        </div>
+      </div>
+    </div>`;
+
+  $('.row').append(newTableHtml);
+  
+  const newDrake = dragula([...document.getElementsByClassName('list-group')]);
+
+  newDrake.on('drag', (el, source) => {
+    el.classList.add('list-group-item', 'placeholder');
+    if (el.innerText === '') {
+      el.innerText = '';
+    }
+  });
+
+  newDrake.on('dragend', (el) => {
+    el.classList.remove('placeholder');
+    if (el.innerText === '') {
+      el.innerText = 'New Element...';
+    }
+  });
 
 }
 
@@ -131,10 +141,23 @@ function addTable(element) {
       const apiRequests = module.default;
 
       if (selectedBoard != null) {
-        apiRequests.upsertTable(selectedBoard.id, "New Table")
-          .then(_ => {
 
-            updateAndRenderTables();
+        unspecified_id = "UNSPECIFIED-" + Math.floor(Math.random() * 1000).toString();
+
+        addTableElement({
+          "id": unspecified_id,
+          "name": "New Table",
+          "entries": null,
+        })
+
+        apiRequests.upsertTable(selectedBoard.id, "New Table")
+          .then(new_table => {
+
+            new_ul = $(`#${unspecified_id}`);
+            new_ul.attr("id", new_table.id);
+
+            delete_button = new_ul.prev();
+            delete_button.attr("onclick", `removeTable(${new_table.id}, this)`)
 
           })
           .catch(error => {

@@ -142,10 +142,12 @@ def upsert_board(name, board_id=None):
 def upsert_table(board_id, name, table_id=None):
     session = Session()
     board = session.query(Board).filter_by(id=board_id).first()
+    
     if not board:
         session.close()
-        return
+        return None
     
+    table = None
     if table_id:
         table = session.query(Table).filter_by(id=table_id).first()
         if table:
@@ -153,17 +155,27 @@ def upsert_table(board_id, name, table_id=None):
     else:
         new_table = Table(name=name, board=board)
         session.add(new_table)
+        table = new_table
+    
     session.commit()
+
+    if table:
+        session.refresh(table)
+    
     session.close()
+    return table
+
 
 
 def upsert_entry(table_id, text, entry_id=None):
     session = Session()
     table = session.query(Table).filter_by(id=table_id).first()
+    
     if not table:
         session.close()
-        return
+        return None
     
+    entry = None
     if entry_id:
         entry = session.query(Entry).filter_by(id=entry_id).first()
         if entry:
@@ -171,8 +183,15 @@ def upsert_entry(table_id, text, entry_id=None):
     else:
         new_entry = Entry(text=text, table=table)
         session.add(new_entry)
+        entry = new_entry
+    
     session.commit()
+
+    if entry:
+        session.refresh(entry)
+    
     session.close()
+    return entry
 
 
 def update_entry_table(entry_id, new_table_id):
