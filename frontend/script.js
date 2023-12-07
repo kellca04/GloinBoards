@@ -92,7 +92,7 @@ function addTableElement(table) {
       entriesHtml += `
         <li class="list-group-item" id="entry-${entry.id}">
           <div class="w-90" ondblclick="editItem(${entry.id}, this)">${entry.text}</div>
-          <span class="delete-item" onclick="deleteItem(${entry.id})">X</span>
+          <span class="delete-item" onclick="removeEntry(${entry.id}, this)">X</span>
         </li>`
   
     }
@@ -167,14 +167,12 @@ function addEntry(table_id, table_element) {
           <li class="list-group-item" id="entry-${unspecified_id}">
             <div 
               class="w-90" 
-              id="entry-${unspecified_id}-edit"
-              ondblclick="editItem(${unspecified_id}, this)">
+              id="entry-${unspecified_id}-edit">
               New Task
             </div>
             <span 
               class="delete-item" 
-              id="entry-${unspecified_id}-rm"
-              onclick="deleteItem(${unspecified_id})">
+              id="entry-${unspecified_id}-rm">
               X
             </span>
           </li>
@@ -184,16 +182,15 @@ function addEntry(table_id, table_element) {
           .then(new_entry => {
 
             entry_element = $(`#entry-${unspecified_id}`);
-            entry_element.attr("id", `entry${new_entry.id}`);
+            entry_element.attr("id", `entry-${new_entry.id}`);
 
             edit_entry = $(`#entry-${unspecified_id}-edit`);
             edit_entry.attr("id", "");
-            edit_entry.attr("onclick", `editItem(${new_entry.id})`)
-
+            edit_entry.attr("ondblclick", `editItem(${new_entry.id}, this)`)
 
             rm_entry = $(`#entry-${unspecified_id}-rm`);
-            edit_entry.attr("id", "");
-            edit_entry.attr("onclick", `deleteItem(${new_entry.id})`)
+            rm_entry.attr("id", "");
+            rm_entry.attr("onclick", `removeEntry(${new_entry.id}, this)`)
 
           })
           .catch(error => {
@@ -205,12 +202,6 @@ function addEntry(table_id, table_element) {
     .catch(error => {
       console.error('Failed to load module:', error);
     });
-
-  entryHtml = `
-    <li class="list-group-item">
-      <div class="w-90" ondblclick="editItem(${entry.id}, this)">${entry.text}</div>
-      <span class="delete-item" onclick="deleteItem(${entry.id})">X</span>
-    </li>`
 
 }
 
@@ -257,16 +248,16 @@ function addTable() {
         apiRequests.upsertTable(selectedBoard.id, "New Table")
           .then(new_table => {
 
-            new_ul = $(`table-#${unspecified_id}`);
-            new_ul.attr("id", new_table.id);
+            new_ul = $(`#table-${unspecified_id}`);
+            new_ul.attr("id", `table-${new_table.id}`);
 
-            delete_button = $(`table-#${unspecified_id}-rm`);
+            delete_button = $(`#table-${unspecified_id}-rm`);
             delete_button.attr("id", `table-${new_table.id}-rm`);
             delete_button.attr("onclick", `removeTable(${new_table.id}, this)`)
 
             add_button = $(`#table-${unspecified_id}-add`);
             add_button.attr("id", `table-${new_table.id}-add`);
-            addd_button.attr("onclick", `addEntry(${new_table.id}, this)`)
+            add_button.attr("onclick", `addEntry(${new_table.id}, this)`)
 
           })
           .catch(error => {
@@ -289,13 +280,10 @@ function removeTable(tableId, element) {
 
       const apiRequests = module.default;
 
+      $(element).parents('.col-md-4').remove();
+
       if (selectedBoard != null) {
         apiRequests.deleteTable(tableId)
-          .then(_ => {
-
-            $(element).parents('.col-md-4').remove();
-
-          })
           .catch(error => {
             console.error('Error deleting table:', error);
           });
@@ -308,6 +296,29 @@ function removeTable(tableId, element) {
 
 }
 
+
+function removeEntry(entryId, element) {
+
+  import(requestScriptPath)
+    .then(module => {
+
+      const apiRequests = module.default;
+
+      $(element).parents('.list-group-item').remove();
+
+      if (selectedBoard != null) {
+        apiRequests.deleteEntry(entryId)
+          .catch(error => {
+            console.error('Error deleting entry:', error);
+          });
+      }
+
+    })
+    .catch(error => {
+      console.error('Failed to load module:', error);
+    });
+
+}
 
 
 function editItem(entryId, element) {
