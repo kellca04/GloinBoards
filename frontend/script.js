@@ -118,7 +118,13 @@ function addTableElement(table) {
           <i class="bi bi-trash"></i>
         </button>
         <div class="card-header d-flex justify-content-center">
-          <h4 contenteditable="true" class="w-75">${table.name}</h4>
+          <h4 
+            contenteditable="true"
+            id="table-${table.id}-hdr"
+            ondblclick="editTable(${table.id}, this)" 
+            class="w-75">
+            ${table.name}
+          </h4>
         </div>
         <div class="card-body">
           <ul id="table-${table.id}" class="list-group">
@@ -255,7 +261,7 @@ function addTable() {
           "entries": null,
         })
 
-        apiRequests.upsertTable(selectedBoard.id, "New Table")
+        apiRequests.upsertTable("New Table", selectedBoard.id)
           .then(new_table => {
 
             new_ul = $(`#table-${unspecified_id}`);
@@ -263,11 +269,15 @@ function addTable() {
 
             delete_button = $(`#table-${unspecified_id}-rm`);
             delete_button.attr("id", `table-${new_table.id}-rm`);
-            delete_button.attr("onclick", `removeTable(${new_table.id}, this)`)
+            delete_button.attr("onclick", `removeTable(${new_table.id}, this)`);
+
+            table_header = $(`#table-${unspecified_id}-hdr`);
+            table_header.attr("id", `table-${new_table.id}-hdr`);
+            table_header.attr("ondblclick", `editTable(${new_table.id}, this)`)
 
             add_button = $(`#table-${unspecified_id}-add`);
             add_button.attr("id", `table-${new_table.id}-add`);
-            add_button.attr("onclick", `addEntry(${new_table.id}, this)`)
+            add_button.attr("onclick", `addEntry(${new_table.id}, this)`);
 
           })
           .catch(error => {
@@ -345,7 +355,7 @@ function editEntry(entryId, element) {
 
     listItem.attr('contenteditable', 'false');
 
-    if (parent.find("div").length == 0 || !listItem.text()) {
+    if (parent.find("div").length == 0 || !newText) {
 
       removeEntry(entryId, listItem);
 
@@ -368,11 +378,51 @@ function editEntry(entryId, element) {
           console.error('Failed to load module:', error);
         });
 
+    }
 
+  });
 
+}
+
+function editTable(tableId, element) {
+
+  const tableHeading = $(element);
+  const originalText = tableHeading.text();
+
+  tableHeading.attr('contenteditable', 'true');
+  tableHeading.focus();
+
+  tableHeading.off('blur').on('blur', function () {
+
+    const newText = tableHeading.text();
+
+    tableHeading.attr('contenteditable', 'false');
+
+    if (!newText) {
+
+      removeTable(tableId, tableHeading.parents('.card'))
+
+    } else if (newText !== originalText) {
+
+      import(requestScriptPath)
+        .then(module => {
+
+          const apiRequests = module.default;
+
+          if (selectedBoard != null) {
+            apiRequests.upsertTable(newText, null, tableId)
+              .catch(error => {
+                console.error('Error updating table:', error);
+              });
+          }
+
+        })
+        .catch(error => {
+          console.error('Failed to load module:', error);
+        });
 
     }
 
   });
-}
 
+}

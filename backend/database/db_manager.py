@@ -141,11 +141,6 @@ def upsert_board(name, board_id=None):
 
 def upsert_table(board_id, name, table_id=None):
     session = Session()
-    board = session.query(Board).filter_by(id=board_id).first()
-    
-    if not board:
-        session.close()
-        return None
     
     table = None
     if table_id:
@@ -153,6 +148,12 @@ def upsert_table(board_id, name, table_id=None):
         if table:
             table.name = name
     else:
+        board = session.query(Board).filter_by(id=board_id).first()
+    
+        if not board:
+            session.close()
+            return None
+        
         new_table = Table(name=name, board=board)
         session.add(new_table)
         table = new_table
