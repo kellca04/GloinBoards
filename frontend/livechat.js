@@ -1,4 +1,4 @@
-<script type="module">
+
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getDatabase, ref, set, remove, onChildAdded, onChildRemoved } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
@@ -58,4 +58,4 @@
         var msgBox = document.getElementById(data.key);
         messages.removeChild(msgBox);
     });
-</script>
+
