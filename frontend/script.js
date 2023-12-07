@@ -42,7 +42,6 @@ function initialize() {
               menu.append(opt);
           });
 
-          console.log("Use last board: " + useLastBoard);
           setCurrentBoard(useLastBoard ? lastBoardId : allBoards[0].id);
 
         })
