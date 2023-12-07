@@ -126,7 +126,7 @@ def upsert_table(board_id, name, table_id=None):
             session.close()
             return None
         
-        new_table = Table(name=name, board=board)
+        new_table = Table(name=name, board=board, order=[])
         session.add(new_table)
         table = new_table
     
@@ -163,7 +163,9 @@ def upsert_entry(table_id, text, entry_id=None):
         session.commit()
 
         session.refresh(entry)
-        table.order.append(entry.id)
+        new_order = table.order
+        new_order.append(entry.id)
+        table.order = new_order
         
 
     
@@ -173,10 +175,25 @@ def upsert_entry(table_id, text, entry_id=None):
     return entry
 
 
-def update_entry_table(entry_id, new_table_id):
+def update_entry_table(entry_id, new_table_id, position):
     session = Session()
     entry = session.query(Entry).filter_by(id=entry_id).first()
+    old_table = session.query(Table).filter_by(id=entry.table_id).first()
     new_table = session.query(Table).filter_by(id=new_table_id).first()
+
+    removed_entry_order = []
+
+    for e in old_table.order:
+        if (e != entry_id):
+            removed_entry_order.append(e)
+
+    old_table.order = removed_entry_order
+
+    inserted_entry_order = new_table[:position]
+    inserted_entry_order.append(entry_id)
+    inserted_entry_order.extend(new_table[position:])
+
+    new_table.order = inserted_entry_order
 
     if entry and new_table:
         entry.table_id = new_table_id
