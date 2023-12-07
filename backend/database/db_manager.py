@@ -261,6 +261,20 @@ def remove_entry(entry_id):
     entry = session.query(Entry).filter_by(id=entry_id).first()
 
     if entry:
+        old_table = session.query(Table).filter_by(id=entry.table_id).first()
+
+        removed_entry_order = []
+
+        for e in old_table.order:
+            if (e != entry_id):
+                removed_entry_order.append(e)
+
+        old_table.order = None
+
+        session.commit()
+        session.refresh(old_table)
+
+        old_table.order = removed_entry_order
         session.delete(entry)
         session.commit()
 
