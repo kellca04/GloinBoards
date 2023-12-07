@@ -12,11 +12,10 @@
 
 <body>
   
-    <nav class="navbar nav-bar">
-     
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+ 
   
-  
-
+  <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav">
       <!-- Dropdown Menu for Boards -->
       <li class="nav-item dropdown">
@@ -93,7 +92,6 @@
     </div>
   </div>
 </div>
-    </nav>
 
   <div class="container">
     <div class="row"></div>
@@ -174,6 +172,25 @@
             messages.removeChild(msgBox);
         })
     </script>
+  <script>
+  // JavaScript functions to handle adding boards and managing users
+  function addBoard() {
+    var boardName = $('#boardName').val();
+    $('#boardsDropdownMenu').append('<a class="dropdown-item" href="#">' + boardName + '</a>');
+    $('#boardName').val('');
+    $('#addBoardModal').modal('hide');
+  }
+
+  function addUser() {
+    var userEmail = $('#userEmail').val();
+    $('#userList').append('<li class="list-group-item">' + userEmail + ' <button class="btn btn-danger btn-sm float-right" onclick="removeUser(this)">Remove</button></li>');
+    $('#userEmail').val('');
+  }
+
+  function removeUser(button) {
+    $(button).closest('li').remove();
+  }
+</script>
 </body>
 
 
