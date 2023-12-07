@@ -16,40 +16,11 @@ def insert_test_data():
     board_main = Board(name='Main Board', emails=["grunet01@luther.edu", "kellca04@luther.edu"])
 
     # Tables for 'Main Board'
-    table_todo = Table(name='To-Do', board=board_main)
-    table_in_progress = Table(name='In Progress', board=board_main)
-    table_in_review = Table(name='In Review', board=board_main)
-    table_completed = Table(name='Completed', board=board_main)
-
-    # Entries for 'To-Do' table
-    entry_todo1 = Entry(text='Finish project proposal', table=table_todo)
-    entry_todo2 = Entry(text='Call client for meeting', table=table_todo)
-    entry_todo3 = Entry(text='Prepare presentation slides', table=table_todo)
-    entry_todo4 = Entry(text='Follow up on emails', table=table_todo)
-
-    # Entries for 'In Progress' table
-    entry_in_progress1 = Entry(text='Develop feature A', table=table_in_progress)
-    entry_in_progress2 = Entry(text='Code optimization', table=table_in_progress)
-    entry_in_progress3 = Entry(text='Refactor existing code', table=table_in_progress)
-
-    # Entries for 'In Review' table
-    entry_in_review1 = Entry(text='Document code changes', table=table_in_review)
-    entry_in_review2 = Entry(text='Bug fixing', table=table_in_review)
-    entry_in_review3 = Entry(text='Code review', table=table_in_review)
-
-    # Entries for 'Completed' table
-    entry_completed1 = Entry(text='Project A completed', table=table_completed)
-    entry_completed2 = Entry(text='Task B done', table=table_completed)
-    entry_completed3 = Entry(text='Final testing and QA', table=table_completed)
-    entry_completed4 = Entry(text='Prepare final report', table=table_completed)
+    table_todo = Table(name='To-Do', board=board_main, order=[])
 
     # Adding data to the session
     session.add_all([
-        board_main, table_todo, table_in_progress, table_in_review, table_completed,
-        entry_todo1, entry_todo2, entry_todo3, entry_todo4,
-        entry_in_progress1, entry_in_progress2, entry_in_progress3,
-        entry_in_review1, entry_in_review2, entry_in_review3,
-        entry_completed1, entry_completed2, entry_completed3, entry_completed4
+        board_main, table_todo
     ])
     session.commit()
 
@@ -127,14 +98,14 @@ def get_entries(table_id):
 
 
 # Define functions for modifying data
-def upsert_board(name, board_id=None):
+def upsert_board(name, board_id=None, user_email=None):
     session = Session()
     if board_id:
         board = session.query(Board).filter_by(id=board_id).first()
         if board:
             board.name = name
     else:
-        new_board = Board(name=name)
+        new_board = Board(name=name, emails=[user_email])
         session.add(new_board)
     session.commit()
     session.close()
@@ -190,7 +161,7 @@ def upsert_entry(table_id, text, entry_id=None):
         entry = new_entry
 
         session.commit()
-        
+
         session.refresh(entry)
         table.order.append(entry.id)
         
