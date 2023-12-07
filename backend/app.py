@@ -49,11 +49,23 @@ def tables(board_id):
 @app.route('/boards', methods=['POST', 'PUT'])
 def upsert_board_endpoint():
     name = request.json.get('name')
+    email = request.json.get('email')
     board_id = request.json.get('board_id')  # For updates
 
-    upsert_board(name, board_id)
+    upsert_board(name, board_id, email)
 
     response = jsonify({'message': 'Board upserted successfully'})
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
+
+
+@app.route('/boards/<int:board_id>/addEmail', methods=['POST'])
+def upsert_board_endpoint(board_id):
+    email = request.json.get('email')
+
+    add_board_user(board_id, email)
+
+    response = jsonify({'message': 'Email added successfully'})
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
 

@@ -111,6 +111,24 @@ def upsert_board(name, board_id=None, user_email=None):
     session.close()
 
 
+def add_board_user(board_id, email):
+    session = Session()
+    board = session.query(Board).filter_by(id=board_id).first()
+
+    previousEmails = board.emails
+
+    board.emails = None
+    session.commit()
+    session.refresh(board)
+
+    previousEmails.append(email)
+    board.emails = previousEmails
+
+    session.commit()
+    session.close()
+
+
+
 def upsert_table(board_id, name, table_id=None):
     session = Session()
     
@@ -192,17 +210,28 @@ def update_entry_table(entry_id, new_table_id, position):
         if (e != entry_id):
             removed_entry_order.append(e)
 
+    old_table.order = None
+
+    session.commit()
+    session.refresh(old_table)
+
     old_table.order = removed_entry_order
 
     inserted_entry_order = new_table[:position]
     inserted_entry_order.append(entry_id)
     inserted_entry_order.extend(new_table[position:])
 
+
+    new_table.order = None
+    session.commit()
+    session.refresh(new_table)
+
     new_table.order = inserted_entry_order
 
     if entry and new_table:
         entry.table_id = new_table_id
-        session.commit()
+        
+    session.commit()
     
     session.close()
 

@@ -3,10 +3,10 @@ const BASE_URL =
   //'http://127.0.0.1:5000';          // for local hosting
 
 const apiRequests = {
-  async upsertBoard(name, boardId = null) {
+  async upsertBoard(name, boardId = null, email = null) {
     const url = `${BASE_URL}/boards`;
     const method = boardId ? 'PUT' : 'POST';
-    const body = JSON.stringify({ name, board_id: boardId });
+    const body = JSON.stringify({ name, board_id: boardId, email: email });
 
     const response = await fetch(url, {
       method,
@@ -60,7 +60,7 @@ const apiRequests = {
   },
 
   async getBoardsByEmail() {
-    const userEmail = sessionStorage.getItem('userEmail');
+    const userEmail = sessionStorage.getItem('userEmail') ?? "grunet01@luther.edu";
     if (!userEmail) {
       throw new Error('User email not found in sessionStorage');
     }
