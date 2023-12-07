@@ -9,7 +9,7 @@ from sqlalchemy.dialects.postgresql import ARRAY
 
 
 #db_url = f"postgresql+psycopg2://{username}:{password}@{host}/{dbname}"
-db_url = "postgresql+psycopg2://final_project_database_h5fm_user:qQifzG040u147jy0b2Kl35KCYl2yFndu@dpg-cloj7u9oh6hc73bhqod0-a/final_project_database_h5fm"
+db_url = "postgresql+psycopg2://final_project_database_mueg_user:LnRLZfPCktMfavjtZSIQxv54qwn2xKSy@dpg-clojju9oh6hc73bi0gug-a/final_project_database_mueg"
 engine = create_engine(db_url, echo=False)
 
 
