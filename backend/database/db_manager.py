@@ -158,21 +158,21 @@ def upsert_entry(table_id, text, entry_id=None):
         
         new_entry = Entry(text=text, table=table)
         session.add(new_entry)
-        entry = new_entry
 
         session.commit()
 
-        session.refresh(entry)
+        session.refresh(new_entry)
         new_order = table.order
-        new_order.append(entry.id)
+        new_order.append(new_entry.id)
         table.order = new_order
         
 
+    response = {'id': new_entry.id, 'text': new_entry.text}
     
     session.commit()
     session.close()
 
-    return entry
+    return response
 
 
 def update_entry_table(entry_id, new_table_id, position):

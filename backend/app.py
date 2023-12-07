@@ -79,7 +79,7 @@ def upsert_entry_endpoint():
 
     newEntry = upsert_entry(table_id, text, entry_id)
 
-    response = jsonify(entry_to_dict(newEntry))
+    response = jsonify(newEntry)
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
 
