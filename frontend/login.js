@@ -28,7 +28,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebas
     
             console.log(user);
             window.sessionStorage.setItem('sender', firstName); 
-            window.location.href = "/index.html";
+            window.location.href = "/#";
     
         }).catch((error) => {
             const errorCode = error.code;
