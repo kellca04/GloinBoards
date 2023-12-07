@@ -160,8 +160,11 @@ function addTableElement(table) {
 
     table_element_id = $(element).parent().attr('id');
     table_id = table_element_id.split("-")[1];
+
+    const parent = el.parentNode
+    const position = Array.prototype.indexOf.call(parent.children, el);
     
-    moveEntry(entry_id, table_id);
+    moveEntry(entry_id, table_id, position);
 
   });
 
@@ -226,14 +229,14 @@ function addEntry(table_id, table_element) {
 }
 
 
-function moveEntry(entryId, tableId) {
+function moveEntry(entryId, tableId, position) {
 
   import(requestScriptPath)
         .then(module => {
 
           const apiRequests = module.default;
 
-          apiRequests.moveEntryToTable(entryId, tableId)
+          apiRequests.moveEntryToTable(entryId, tableId, position)
             .catch(error => {
               console.error('Error moving entry:', error);
             });

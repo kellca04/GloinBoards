@@ -45,10 +45,10 @@ const apiRequests = {
     return await response.json();
   },
 
-  async moveEntryToTable(entryId, newTableId) {
+  async moveEntryToTable(entryId, newTableId, position) {
     const url = `${BASE_URL}/entries/${entryId}/move`;
     const method = 'PUT';
-    const body = JSON.stringify({ new_table_id: newTableId });
+    const body = JSON.stringify({ new_table_id: newTableId, position: position});
 
     const response = await fetch(url, {
       method,

@@ -99,8 +99,9 @@ def upsert_entry_endpoint():
 @app.route('/entries/<int:entry_id>/move', methods=['PUT'])
 def move_entry_to_table_endpoint(entry_id):
     new_table_id = request.json.get('new_table_id')
+    position = request.json.get('position')
 
-    update_entry_table(entry_id, new_table_id)
+    update_entry_table(entry_id, new_table_id, position)
 
     response = jsonify({'message': 'Entry moved to new table successfully'})
     response.headers.add('Access-Control-Allow-Origin', '*')
