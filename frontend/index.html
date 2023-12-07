@@ -169,25 +169,25 @@
             messages.removeChild(msgBox);
         })
     </script>
-  <script>
-  // JavaScript functions to handle adding boards and managing users
-  function addBoard() {
-    var boardName = $('#boardName').val();
-    $('#boardsDropdownMenu').append('<a class="dropdown-item" href="#">' + boardName + '</a>');
-    $('#boardName').val('');
-    $('#addBoardModal').modal('hide');
-  }
+ <script>
+    // JavaScript functions to handle adding boards and managing users
+    function addBoard() {
+      var boardName = $('#boardName').val();
+      $('#boardsDropdownMenu').append('<a class="dropdown-item" href="#">' + boardName + '</a>');
+      $('#boardName').val('');
+      $('#addBoardModal').modal('hide');
+    }
 
-  function addUser() {
-    var userEmail = $('#userEmail').val();
-    $('#userList').append('<li class="list-group-item">' + userEmail + ' <button class="btn btn-danger btn-sm float-right" onclick="removeUser(this)">Remove</button></li>');
-    $('#userEmail').val('');
-  }
+    function addUser() {
+      var userEmail = $('#userEmail').val();
+      $('#userList').append('<li class="list-group-item">' + userEmail + ' <button class="btn btn-danger btn-sm float-right" onclick="removeUser(this)">Remove</button></li>');
+      $('#userEmail').val('');
+    }
 
-  function removeUser(button) {
-    $(button).closest('li').remove();
-  }
-</script>
+    function removeUser(button) {
+      $(button).closest('li').remove();
+    }
+  </script>
 </body>
 
 
