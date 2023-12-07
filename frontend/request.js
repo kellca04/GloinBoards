@@ -1,8 +1,6 @@
-
 const BASE_URL = 
   'https://cs330-final.onrender.com'; // online api
   //'http://127.0.0.1:5000';          // for local hosting
-
 
 const apiRequests = {
   async upsertBoard(name, boardId = null) {
@@ -61,10 +59,22 @@ const apiRequests = {
     return await response.json();
   },
 
-  async getBoardsByEmail(userEmail) {
+  async getBoardsByEmail() {
+    const userEmail = sessionStorage.getItem('userEmail');
+    if (!userEmail) {
+      throw new Error('User email not found in sessionStorage');
+    }
     const url = `${BASE_URL}/boards/${userEmail}`;
-    const response = await fetch(url);
-    return await response.json();
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`Error fetching boards. Status: ${response.status}`);
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Error in getBoardsByEmail:', error.message);
+      throw error; 
+    }
   },
 
   async getTablesByBoardId(boardId) {
