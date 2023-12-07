@@ -119,7 +119,7 @@
     if (sessionStorage.getItem('sender')) {
         sender = sessionStorage.getItem('sender');
     } else {
-   
+       window.location.href = 'login.html';
     }
 
     module.sendMsg = function sendMsg() {
