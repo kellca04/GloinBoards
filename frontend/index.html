@@ -120,7 +120,8 @@ aria-hidden="true">
         if(sessionStorage.getItem('sender')){
             sender = sessionStorage.getItem('sender');
         } else {
-           window.location.href = "local.html";
+          window.location.href = "{{ site.baseurl }}/login.html";
+;
         }
 
 
