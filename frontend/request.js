@@ -3,10 +3,12 @@ const BASE_URL =
   //'http://127.0.0.1:5000';          // for local hosting
 
 const apiRequests = {
-  async upsertBoard(name, boardId = null, email = null) {
+  async upsertBoard(name, boardId = null) {
+    const userEmail = sessionStorage.getItem('userEmail') ?? "grunet01@luther.edu"
+
     const url = `${BASE_URL}/boards`;
     const method = boardId ? 'PUT' : 'POST';
-    const body = JSON.stringify({ name, board_id: boardId, email: email });
+    const body = JSON.stringify({ name, board_id: boardId, email: userEmail });
 
     const response = await fetch(url, {
       method,
@@ -17,7 +19,21 @@ const apiRequests = {
     return await response.json();
   },
 
-  async upsertTable(name, boardId, tableId = null) {
+  async addUserEmail(boardId, email) {
+    const url = `${BASE_URL}/boards/${boardId}/addEmail`;
+    const method = 'POST';
+    const body = JSON.stringify({ email: email });
+
+    const response = await fetch(url, {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+      body,
+    });
+    
+    return await response.json();
+  },
+
+  async upsertTable(name, boardId = null, tableId = null) {
     const url = `${BASE_URL}/tables`;
     const method = tableId ? 'PUT' : 'POST';
     const body = JSON.stringify({ board_id: boardId, name, table_id: tableId });

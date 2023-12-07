@@ -13,24 +13,15 @@
 <body>
 
   <nav class="navbar navbar-expand-lg navbar-dark">
-    
-
-      <div class="dropdown">
-        <button class="btn btn-secondary dropdown-toggle" type="button" id="boardsDropdown" data-toggle="dropdown"
-          aria-haspopup="true" aria-expanded="false">
-          Boards
-        </button>
-        <div class="dropdown-menu" aria-labelledby="boardsDropdown" id="boardsDropdownMenu">
-
-        </div>
-      </div>
-
-
-      <button class="btn btn-primary" data-toggle="modal" data-target="#addBoardModal">Add New Board</button>
-
-      <button class="btn btn-success" data-toggle="modal" data-target="#manageUsersModal">Manage Users</button>
-
-    
+    <select 
+      class="form-select form-select-lg mb-3" 
+      aria-label="Large select example"
+      id="selectBoard"
+      onchange="setCurrentBoard(this.value)"
+      >
+    </select>
+    <button class="btn btn-primary" data-toggle="modal" data-target="#addBoardModal">Add New Board</button>
+    <button class="btn btn-success" data-toggle="modal" data-target="#manageUsersModal">Manage Users</button>
   </nav>
 
 
@@ -167,6 +158,8 @@ aria-hidden="true">
     $('#boardsDropdownMenu').append('<a class="dropdown-item" href="#">' + boardName + '</a>');
     $('#boardName').val('');
     $('#addBoardModal').modal('hide');
+
+    addBoardWithCurrentEmail(boardName)
   }
 
   function addUser() {
@@ -176,7 +169,10 @@ aria-hidden="true">
       $('#userList').append('<li class="list-group-item">' + userEmail +
         ' <button class="btn btn-danger btn-sm float-right" onclick="removeUser(this)">X</button></li>');
       $('#userEmail').val('');
+      
+      addUserToCurrentBoard(userEmail)
     }
+
   }
 
   function removeUser(button) {

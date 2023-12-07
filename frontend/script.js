@@ -5,26 +5,40 @@ var selectedBoard = null;
 var tables = null;
 
 
-// Initialize list of all boards for current user
-import(requestScriptPath)
-  .then(module => {
-    const apiRequests = module.default;
-    const userEmail = "grunet01@luther.edu" //change later to use oauth
+initialize()
 
-    apiRequests.getBoardsByEmail(userEmail)
-      .then(allBoards => {
-        boards = allBoards;
-        setCurrentBoard(allBoards[0].id);
-      })
-      .catch(error => {
-        console.error('Error fetching data:', error);
-      });
+function initialize() {
+  // Initialize list of all boards for current user
+  import(requestScriptPath)
+    .then(module => {
+      const apiRequests = module.default;
+      const userEmail = "grunet01@luther.edu" //change later to use oauth
 
-  })
-  .catch(error => {
-    console.error('Failed to load module:', error);
-  });
+      apiRequests.getBoardsByEmail(userEmail)
+        .then(allBoards => {
+          boards = allBoards;
 
+          let menu = document.querySelector('#selectBoard')
+          menu.innerHTML = ""
+
+          allBoards.map( (b, i) => {
+              let opt = document.createElement("option");
+              opt.value = b.id;
+              opt.innerHTML = b.name;
+              menu.append(opt);
+          });
+
+          setCurrentBoard(allBoards[0].id);
+        })
+        .catch(error => {
+          console.error('Error fetching data:', error);
+        });
+
+    })
+    .catch(error => {
+      console.error('Failed to load module:', error);
+    });
+}
 
 
 function setCurrentBoard(boardId) {
@@ -34,6 +48,53 @@ function setCurrentBoard(boardId) {
   });
 
   updateAndRenderTables();
+
+}
+
+
+function addUserToCurrentBoard(email) {
+
+  import(requestScriptPath)
+    .then(module => {
+
+      const apiRequests = module.default;
+
+      if (selectedBoard != null) {
+        apiRequests.addUserEmail(selectedBoard.id, email)
+          .catch(error => {
+            console.error('Error fetching data:', error);
+          });
+      }
+
+    })
+    .catch(error => {
+      console.error('Failed to load module:', error);
+    });
+
+}
+
+
+function addBoardWithCurrentEmail(name) {
+
+  import(requestScriptPath)
+    .then(module => {
+
+      const apiRequests = module.default;
+
+      if (selectedBoard != null) {
+        apiRequests.upsertBoard(name)
+          .then(_ => {
+            initialize()
+          })
+          .catch(error => {
+            console.error('Error adding board:', error);
+          });
+      }
+
+    })
+    .catch(error => {
+      console.error('Failed to load module:', error);
+    });
 
 }
 
