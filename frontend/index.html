@@ -123,16 +123,21 @@
     }
 
     module.sendMsg = function sendMsg() {
-        var msg = msgTxt.value;
-        var timestamp = new Date().getTime();
-        set(ref(db, "messages/" + timestamp), {
-            msg: msg,
-            sender: sender,
-            boardId: selectedBoard.id 
-        });
+        var msg = msgTxt.value.trim();
 
-        msgTxt.value = "";
-    };
+        if (msg !== "") {
+            var timestamp = new Date().getTime();
+            set(ref(db, "messages/" + timestamp), {
+                msg: msg,
+                sender: sender,
+                boardId: selectedBoard.id  // Set the boardId when saving the message
+            });
+
+            msgTxt.value = "";
+        } else {
+            alert("Please enter a non-empty message before sending.");
+        }
+    }
 
     onChildAdded(ref(db, "messages"), (data) => {
         // Display messages only if boardId matches selectedBoard.id
