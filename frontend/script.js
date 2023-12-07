@@ -16,6 +16,8 @@ function initialize() {
 
       apiRequests.getBoardsByEmail(userEmail)
         .then(allBoards => {
+          console.log("Boards: " + allBoards);
+
           if (!allBoards) {
             allBoards = ["Please create a board"];
           }
