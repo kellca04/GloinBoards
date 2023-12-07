@@ -16,6 +16,10 @@ function initialize() {
 
       apiRequests.getBoardsByEmail(userEmail)
         .then(allBoards => {
+          if (!allBoards) {
+            allBoards = [];
+          }
+
           boards = allBoards;
 
           let menu = document.querySelector('#selectBoard')
