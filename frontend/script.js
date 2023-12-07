@@ -42,7 +42,7 @@ function initialize() {
               menu.append(opt);
           });
 
-          if (!allBoards.error) {
+          if (allBoards.length > 0) {
             setCurrentBoard(useLastBoard ? lastBoardId : allBoards[0].id);
           }
 
