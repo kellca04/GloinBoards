@@ -10,8 +10,8 @@ CORS(app)
 
 initialize_database()
 clear_database()
-#insert_test_data()
-#view_data()
+insert_test_data()
+view_data()
 
 
 # Helper functions
