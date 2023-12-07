@@ -148,16 +148,21 @@ function addTableElement(table) {
 
   newDrake.on('drag', (el, source) => {
     el.classList.add('list-group-item', 'placeholder');
-    if (el.innerText === '') {
-      el.innerText = '';
-    }
   });
 
   newDrake.on('dragend', (el) => {
     el.classList.remove('placeholder');
-    if (el.innerText === '') {
-      el.innerText = 'New Element...';
-    }
+
+    element = $(el)
+
+    element_id = element.attr('id');
+    entry_id = element_id.split("-")[1];
+
+    table_element_id = $(element).parent().attr('id');
+    table_id = table_element_id.split("-")[1];
+    
+    moveEntry(entry_id, table_id);
+
   });
 
   generateAddTableButton();
@@ -217,6 +222,26 @@ function addEntry(table_id, table_element) {
     .catch(error => {
       console.error('Failed to load module:', error);
     });
+
+}
+
+
+function moveEntry(entryId, tableId) {
+
+  import(requestScriptPath)
+        .then(module => {
+
+          const apiRequests = module.default;
+
+          apiRequests.moveEntryToTable(entryId, tableId)
+            .catch(error => {
+              console.error('Error moving entry:', error);
+            });
+
+        })
+        .catch(error => {
+          console.error('Failed to load module:', error);
+        });
 
 }
 
