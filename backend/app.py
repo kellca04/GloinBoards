@@ -46,7 +46,7 @@ def tables(board_id):
 
 
 # POST endpoints
-@app.route('/boards', methods=['POST'])
+@app.route('/boards', methods=['POST', 'PUT'])
 def upsert_board_endpoint():
     name = request.json.get('name')
     board_id = request.json.get('board_id')  # For updates
@@ -58,7 +58,7 @@ def upsert_board_endpoint():
     return response
 
 
-@app.route('/tables', methods=['POST'])
+@app.route('/tables', methods=['POST', 'PUT'])
 def upsert_table_endpoint():
     board_id = request.json.get('board_id')
     name = request.json.get('name')
@@ -71,7 +71,7 @@ def upsert_table_endpoint():
     return response
 
 
-@app.route('/entries', methods=['POST'])
+@app.route('/entries', methods=['POST', 'PUT'])
 def upsert_entry_endpoint():
     table_id = request.json.get('table_id')
     text = request.json.get('text')

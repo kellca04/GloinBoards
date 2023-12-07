@@ -169,18 +169,20 @@ def upsert_table(board_id, name, table_id=None):
 
 def upsert_entry(table_id, text, entry_id=None):
     session = Session()
-    table = session.query(Table).filter_by(id=table_id).first()
-    
-    if not table:
-        session.close()
-        return None
     
     entry = None
     if entry_id:
         entry = session.query(Entry).filter_by(id=entry_id).first()
         if entry:
             entry.text = text
+
     else:
+        table = session.query(Table).filter_by(id=table_id).first()
+
+        if not table:
+            session.close()
+            return None
+        
         new_entry = Entry(text=text, table=table)
         session.add(new_entry)
         entry = new_entry

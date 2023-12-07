@@ -1,7 +1,7 @@
 
 const BASE_URL = 
-  'https://cs330-final.onrender.com'; // online api
-  //'http://127.0.0.1:5000';          // for local hosting
+  //'https://cs330-final.onrender.com'; // online api
+  'http://127.0.0.1:5000';          // for local hosting
 
 
 const apiRequests = {
@@ -33,7 +33,7 @@ const apiRequests = {
     return await response.json();
   },
 
-  async upsertEntry(tableId, text, entryId = null) {
+  async upsertEntry(text, tableId = null, entryId = null) {
     const url = `${BASE_URL}/entries`;
     const method = entryId ? 'PUT' : 'POST';
     const body = JSON.stringify({ table_id: tableId, text, entry_id: entryId });

@@ -90,9 +90,18 @@ function addTableElement(table) {
     for (entry of table.entries) {
 
       entriesHtml += `
-        <li class="list-group-item" id="entry-${entry.id}">
-          <div class="w-90" ondblclick="editItem(${entry.id}, this)">${entry.text}</div>
-          <span class="delete-item" onclick="removeEntry(${entry.id}, this)">X</span>
+        <li class="list-group-item p-3" id="entry-${entry.id}">
+          <div 
+            class="w-90 p-2" 
+            ondblclick="editEntry(${entry.id}, this)" 
+            spellcheck="false">
+            ${entry.text}
+          </div>
+          <span 
+            class="delete-item p-1" 
+            onclick="removeEntry(${entry.id}, this)">
+            X
+          </span>
         </li>`
   
     }
@@ -102,14 +111,14 @@ function addTableElement(table) {
     <div class="col-md-4">
       <div class="card position-relative">
         <button 
-          class="w-auto btn btn-sm btn-primary position-absolute m-2"
+          class="w-auto btn btn-sm btn-primary position-absolute m-1"
           id="table-${table.id}-rm"
           onclick="removeTable(${table.id}, this)"
         >
           <i class="bi bi-trash"></i>
         </button>
-        <div class="card-header">
-          <h4 contenteditable="true">${table.name}</h4>
+        <div class="card-header d-flex justify-content-center">
+          <h4 contenteditable="true" class="w-75">${table.name}</h4>
         </div>
         <div class="card-body">
           <ul id="table-${table.id}" class="list-group">
@@ -164,21 +173,22 @@ function addEntry(table_id, table_element) {
 
         const table = $(`#table-${table_id}`)
         table.append(`
-          <li class="list-group-item" id="entry-${unspecified_id}">
+          <li class="list-group-item p-3" id="entry-${unspecified_id}">
             <div 
-              class="w-90" 
-              id="entry-${unspecified_id}-edit">
+              class="w-90 p-2" 
+              id="entry-${unspecified_id}-edit"
+              spellcheck="false">
               New Task
             </div>
             <span 
-              class="delete-item" 
+              class="delete-item p-1" 
               id="entry-${unspecified_id}-rm">
               X
             </span>
           </li>
         `)
 
-        apiRequests.upsertEntry(table_id, "New Task")
+        apiRequests.upsertEntry("New Task", table_id)
           .then(new_entry => {
 
             entry_element = $(`#entry-${unspecified_id}`);
@@ -186,7 +196,7 @@ function addEntry(table_id, table_element) {
 
             edit_entry = $(`#entry-${unspecified_id}-edit`);
             edit_entry.attr("id", "");
-            edit_entry.attr("ondblclick", `editItem(${new_entry.id}, this)`)
+            edit_entry.attr("ondblclick", `editEntry(${new_entry.id}, this)`)
 
             rm_entry = $(`#entry-${unspecified_id}-rm`);
             rm_entry.attr("id", "");
@@ -321,40 +331,46 @@ function removeEntry(entryId, element) {
 }
 
 
-function editItem(entryId, element) {
-  const listItem = $(element).eq(0);
-  const originalText = listItem.text().trim();
+function editEntry(entryId, element) {
+  const listItem = $(element);
+  const originalText = listItem.text();
 
   listItem.attr('contenteditable', 'true');
   listItem.focus();
 
   listItem.off('blur').on('blur', function () {
-    const trimmedText = $(this).text().trim();
 
-    if (trimmedText === 'X') {
-      listItem.remove();
-    } else if (trimmedText === originalText && originalText === 'New Element...') {
-      listItem.text('New Element...');
+    const parent = listItem.parent();
+    const newText = listItem.text();
+
+    if (parent.find("div").length == 0 || !listItem.text()) {
+
+      removeEntry(entryId, listItem);
+
+    } else if (newText !== originalText){
+
+      import(requestScriptPath)
+        .then(module => {
+
+          const apiRequests = module.default;
+
+          if (selectedBoard != null) {
+            apiRequests.upsertEntry(newText, null, entryId)
+              .catch(error => {
+                console.error('Error updating entry:', error);
+              });
+          }
+
+        })
+        .catch(error => {
+          console.error('Failed to load module:', error);
+        });
+
+
+
+
     }
+
   });
 }
 
-$(document).ready(() => {
-
-  const drake = dragula([document.getElementById('table1')]);
-
-  drake.on('drag', (el, source) => {
-    el.classList.add('list-group-item', 'placeholder');
-    if (el.innerText === 'New Element...') {
-      el.innerText = '';
-    }
-  });
-
-  drake.on('dragend', (el) => {
-    el.classList.remove('placeholder');
-    if (el.innerText === '') {
-      el.innerText = 'New Element...';
-    }
-  });
-
-});
