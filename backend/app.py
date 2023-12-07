@@ -8,7 +8,7 @@ app = Flask(__name__)
 CORS(app)
 
 
-#initialize_database()
+initialize_database()
 clear_database()
 insert_test_data()
 view_data()

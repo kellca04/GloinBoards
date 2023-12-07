@@ -1,7 +1,7 @@
 
 const BASE_URL = 
-  'https://cs330-final.onrender.com'; // online api
-  //'http://127.0.0.1:5000';          // for local hosting
+  //'https://cs330-final.onrender.com'; // online api
+  'http://127.0.0.1:5000';          // for local hosting
 
 
 const apiRequests = {

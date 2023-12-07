@@ -1,9 +1,17 @@
-from sqlalchemy import JSON, create_engine, Column, Integer, String, ForeignKey
+from sqlalchemy import JSON, URL, create_engine, Column, Integer, String, ForeignKey
 from sqlalchemy.orm import sessionmaker, relationship, declarative_base
+from sqlalchemy.dialects.postgresql import ARRAY
 
-# For local use
-db_url = "sqlite:///database/model.db"
+
+# For local use with sqlite
+#db_url = "sqlite:///database/model.db"
+#engine = create_engine(db_url, echo=False)
+
+
+#db_url = f"postgresql+psycopg2://{username}:{password}@{host}/{dbname}"
+db_url = "postgresql+psycopg2://final_project_database_h5fm_user:qQifzG040u147jy0b2Kl35KCYl2yFndu@dpg-cloj7u9oh6hc73bhqod0-a/final_project_database_h5fm"
 engine = create_engine(db_url, echo=False)
+
 
 # Create a base class for declarative class definitions
 Base = declarative_base()
@@ -28,6 +36,7 @@ class Table(Base):
     board_id = Column(Integer, ForeignKey('Board.id'))  # Foreign key relationship
     board = relationship('Board', back_populates='tables')  # Bidirectional relationship
     entries = relationship('Entry', back_populates='table', lazy='joined')  # Bidirectional relationship
+    order = Column(ARRAY(Integer))  
 
 
 # Define the Board class inheriting from Base

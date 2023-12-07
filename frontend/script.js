@@ -131,7 +131,7 @@ function addTableElement(table) {
           </ul>
           <button 
             id="table-${table.id}-add"
-            class="btn btn-primary add w-100 text-align-center" 
+            class="btn btn-success add w-100 text-align-center" 
             onclick="addEntry(${table.id}, this)"
           >
             <h5 class="my-auto">
@@ -255,7 +255,7 @@ function generateAddTableButton() {
   addTableButton = `
     <div class="col-md-4" id="addTable">
       <div class="card position-relative" id="addTableCard">
-        <button class="btn btn-primary btn-lg w-100 h-100 mb-0" onclick="addTable()">
+        <button class="btn btn-success btn-lg w-100 h-100 mb-0 mx-0" onclick="addTable()">
           <h2 class="my-auto">
             <i class="bi bi-plus-circle"></i>
           <h2>
