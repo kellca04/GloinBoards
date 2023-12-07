@@ -31,7 +31,8 @@ googleLogin.addEventListener('click', function () {
         console.log(user);
         window.sessionStorage.setItem('sender', firstName);
         window.sessionStorage.setItem('userEmail', userEmail);
-        window.location.href = "#/";
+        window.location.href = "{{ site.baseurl }}/index.html";
+
       } else {
         console.error("User or email not available in the result.");
       }
