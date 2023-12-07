@@ -90,7 +90,7 @@ def get_boards_by_email(email):
     Session = sessionmaker(bind=engine)
     session = Session()
 
-    boards = session.query(Board).filter(Board.emails.contains(email)).all()
+    boards = session.query(Board).filter(Board.emails.contains([email])).all()
     session.close()
 
     return boards
