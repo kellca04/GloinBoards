@@ -138,5 +138,9 @@ const apiRequests = {
     }
   }
 };
+function logout(){
+        sessionStorage.clear()
+        window.reload()
+    }
 
 export default apiRequests;
