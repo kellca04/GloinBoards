@@ -343,6 +343,8 @@ function editEntry(entryId, element) {
     const parent = listItem.parent();
     const newText = listItem.text();
 
+    listItem.attr('contenteditable', 'false');
+
     if (parent.find("div").length == 0 || !listItem.text()) {
 
       removeEntry(entryId, listItem);
