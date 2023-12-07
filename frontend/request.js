@@ -4,7 +4,7 @@ const BASE_URL =
 
 const apiRequests = {
   async upsertBoard(name, boardId = null) {
-    const userEmail = sessionStorage.getItem('userEmail') ?? "grunet01@luther.edu"
+    const userEmail = sessionStorage.getItem('userEmail')
 
     const url = `${BASE_URL}/boards`;
     const method = boardId ? 'PUT' : 'POST';

@@ -7,12 +7,17 @@ var tables = null;
 
 initialize()
 
+setInterval(function(){
+  initialize()
+}, 15000)
+
+
 function initialize() {
   // Initialize list of all boards for current user
   import(requestScriptPath)
     .then(module => {
       const apiRequests = module.default;
-      const userEmail = "grunet01@luther.edu" //change later to use oauth
+      const userEmail = sessionStorage.getItem('userEmail')
 
       apiRequests.getBoardsByEmail(userEmail)
         .then(allBoards => {
