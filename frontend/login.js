@@ -22,14 +22,19 @@ googleLogin.addEventListener('click', function () {
       const credential = GoogleAuthProvider.credentialFromResult(result);
       const user = result.user;
 
-      const displayNameParts = user.displayName.split(' ');
-      const firstName = displayNameParts.length > 0 ? displayNameParts[0] : '';
-      const userEmail = user.email;
+   
+      if (user && user.email) {
+        const displayNameParts = user.displayName.split(' ');
+        const firstName = displayNameParts.length > 0 ? displayNameParts[0] : '';
+        const userEmail = user.email;
 
-      console.log(user);
-      window.sessionStorage.setItem('sender', firstName);
-      window.sessionStorage.setItem('userEmail', userEmail);
-      window.location.href = "index.html";
+        console.log(user);
+        window.sessionStorage.setItem('sender', firstName);
+        window.sessionStorage.setItem('userEmail', userEmail);
+        window.location.href = "index.html";
+      } else {
+        console.error("User or email not available in the result.");
+      }
 
     }).catch((error) => {
       const errorCode = error.code;
