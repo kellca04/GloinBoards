@@ -87,7 +87,17 @@ function addTableElement(table) {
 
   if (table.entries) {
 
-    for (entry of table.entries) {
+    var sortedEntries = []
+
+    for (id of table.order) {
+      for (entry of table.entries) {
+        if (entry.id === id) {
+          sortedEntries.push(entry);
+        }
+      }
+    }
+
+    for (entry of sortedEntries) {
 
       entriesHtml += `
         <li class="list-group-item p-3" id="entry-${entry.id}">
