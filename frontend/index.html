@@ -5,7 +5,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>cs330 final</title>
-  <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
   <link rel="stylesheet" href="style.css">
@@ -13,32 +12,28 @@
 
 <body>
 
-  <!-- Navbar -->
   <nav class="navbar navbar-expand-lg navbar-dark">
     
 
-      <!-- Boards Dropdown -->
       <div class="dropdown">
         <button class="btn btn-secondary dropdown-toggle" type="button" id="boardsDropdown" data-toggle="dropdown"
           aria-haspopup="true" aria-expanded="false">
           Boards
         </button>
         <div class="dropdown-menu" aria-labelledby="boardsDropdown" id="boardsDropdownMenu">
-          <!-- Dynamically populate boards here using JavaScript -->
+
         </div>
       </div>
 
-      <!-- Add New Board Button -->
+
       <button class="btn btn-primary" data-toggle="modal" data-target="#addBoardModal">Add New Board</button>
 
-      <!-- Manage Users Button -->
       <button class="btn btn-success" data-toggle="modal" data-target="#manageUsersModal">Manage Users</button>
 
     
   </nav>
 
 
-  <!-- Add New Board Modal -->
   <div class="modal fade" id="addBoardModal" tabindex="-1" role="dialog" aria-labelledby="addBoardModalLabel"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -50,7 +45,6 @@
           </button>
         </div>
         <div class="modal-body">
-          <!-- Form to enter the name of the new board -->
           <div class="form-group">
             <label for="boardName">Board Name</label>
             <input type="text" class="form-control" id="boardName" placeholder="Enter board name">
@@ -58,37 +52,30 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary" onclick="addBoard()">Add Board</button>
+          <button type="button" class="btn btn-primary" onclick="addBoard()">+</button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Manage Users Modal -->
-  <div class="modal fade" id="manageUsersModal" tabindex="-1" role="dialog" aria-labelledby="manageUsersModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="manageUsersModalLabel">Manage Users</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <!-- Form to manage users (add/remove) -->
-          <div class="form-group">
-            <label for="userEmail">User Email</label>
-            <input type="email" class="form-control" id="userEmail" placeholder="Enter user email">
-          </div>
-          <button type="button" class="btn btn-success" onclick="addUser()">Add User</button>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        </div>
+<div class="modal fade" id="manageUsersModal" tabindex="-1" role="dialog" aria-labelledby="manageUsersModalLabel"
+aria-hidden="true">
+<div class="modal-dialog" role="document">
+  <div class="modal-content">
+    <div class="modal-body">
+      <div class="form-group">
+        <label for="userEmail">User Email</label>
+        <input type="email" class="form-control" id="userEmail" placeholder="Enter user email">
       </div>
+      <button type="button" class="btn btn-success" onclick="addUser()">+</button>
+
+      <ul id="userList" class="list-group mt-3">
+      </ul>
     </div>
   </div>
+</div>
+</div>
+
 
   <div class="container">
     <div class="row"></div>
@@ -102,7 +89,6 @@
     </div>
   </div>
 
-  <!-- jQuery, Bootstrap, and other scripts -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/dragula@3.7.3/dist/dragula.min.js"></script>
@@ -171,7 +157,6 @@
         })
     </script>
   <script>
-  // JavaScript functions to handle adding boards and managing users
   function addBoard() {
     var boardName = $('#boardName').val();
     $('#boardsDropdownMenu').append('<a class="dropdown-item" href="#">' + boardName + '</a>');
@@ -192,7 +177,6 @@
 
 
 <script>
-  // JavaScript functions to handle adding boards and managing users
   function addBoard() {
     var boardName = $('#boardName').val();
     $('#boardsDropdownMenu').append('<a class="dropdown-item" href="#">' + boardName + '</a>');
@@ -202,8 +186,12 @@
 
   function addUser() {
     var userEmail = $('#userEmail').val();
-    $('#userList').append('<li class="list-group-item">' + userEmail + ' <button class="btn btn-danger btn-sm float-right" onclick="removeUser(this)">Remove</button></li>');
-    $('#userEmail').val('');
+
+    if (userEmail !== '') {
+      $('#userList').append('<li class="list-group-item">' + userEmail +
+        ' <button class="btn btn-danger btn-sm float-right" onclick="removeUser(this)">X</button></li>');
+      $('#userEmail').val('');
+    }
   }
 
   function removeUser(button) {
@@ -214,5 +202,4 @@
 </body>
 
 </html>
-
 
