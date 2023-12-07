@@ -114,16 +114,16 @@ aria-hidden="true">
     const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // variables
-        var msgTxt = document.getElementById('msgTxt');
-        var sender;
-        if(sessionStorage.getItem('sender')){
-            sender = sessionStorage.getItem('sender');
-        } else {
-          window.location.href = "https://grunet01.github.io/CS330Final/login.html";
+       var msgTxt = document.getElementById('msgTxt');
+var sender;
 
-;
-        }
+if (sessionStorage.getItem('sender')) {
+    sender = sessionStorage.getItem('sender');
+} else {
+    // Redirect to login.html if 'sender' is not found in sessionStorage
+    window.location.href = 'login.html';
+}
+
 
 
         module.sendMsg = function sendMsg(){
