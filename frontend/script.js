@@ -131,7 +131,7 @@ function addTableElement(table) {
           </ul>
           <button 
             id="table-${table.id}-add"
-            class="btn btn-success add w-100 text-align-center" 
+            class="btn btn-success add w-100 m-0 py-3 text-align-center" 
             onclick="addEntry(${table.id}, this)"
           >
             <h5 class="my-auto">
