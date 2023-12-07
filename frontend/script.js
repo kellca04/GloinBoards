@@ -26,14 +26,24 @@ function initialize() {
           let menu = document.querySelector('#selectBoard')
           menu.innerHTML = ""
 
+          const lastBoardId = localStorage.getItem('currentBoard');
+          var useLastBoard = false;
+
           allBoards.map( (b, i) => {
               let opt = document.createElement("option");
               opt.value = b.id;
               opt.innerHTML = b.name;
+
+              if (b.id === lastBoardId) {
+                useLastBoard = true;
+                opt.selected = true;
+              }
+
               menu.append(opt);
           });
 
-          setCurrentBoard(allBoards[0].id);
+          setCurrentBoard(useLastBoard ? lastBoardId : allBoards[0].id);
+
         })
         .catch(error => {
           console.error('Error fetching data:', error);
@@ -47,6 +57,8 @@ function initialize() {
 
 
 function setCurrentBoard(boardId) {
+
+  localStorage.setItem('currentBoard', boardId); 
 
   selectedBoard = boards.find(function (b) {
     return b.id == boardId;
