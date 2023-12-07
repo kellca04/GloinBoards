@@ -60,7 +60,7 @@ def upsert_board_endpoint():
 
 
 @app.route('/boards/<int:board_id>/addEmail', methods=['POST'])
-def upsert_board_endpoint(board_id):
+def add_user_email_endpoint(board_id):
     email = request.json.get('email')
 
     add_board_user(board_id, email)
