@@ -45,7 +45,7 @@ class Board(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(String)
-    emails = Column(JSON)
+    emails = Column(ARRAY(String))
     tables = relationship('Table', back_populates='board')  # One-to-many relationship
 
 
