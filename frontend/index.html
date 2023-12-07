@@ -24,7 +24,6 @@
     <button class="btn btn-success" data-toggle="modal" data-target="#manageUsersModal">Manage Users</button>
   </nav>
 
-
   <div class="modal fade" id="addBoardModal" tabindex="-1" role="dialog" aria-labelledby="addBoardModalLabel"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -49,24 +48,22 @@
     </div>
   </div>
 
-<div class="modal fade" id="manageUsersModal" tabindex="-1" role="dialog" aria-labelledby="manageUsersModalLabel"
-aria-hidden="true">
-<div class="modal-dialog" role="document">
-  <div class="modal-content">
-    <div class="modal-body">
-      <div class="form-group">
-        <label for="userEmail">User Email</label>
-        <input type="email" class="form-control" id="userEmail" placeholder="Enter user email">
+  <div class="modal fade" id="manageUsersModal" tabindex="-1" role="dialog" aria-labelledby="manageUsersModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="userEmail">User Email</label>
+            <input type="email" class="form-control" id="userEmail" placeholder="Enter user email">
+          </div>
+          <button type="button" class="btn btn-success" onclick="addUser()">+</button>
+          <ul id="userList" class="list-group mt-3">
+          </ul>
+        </div>
       </div>
-      <button type="button" class="btn btn-success" onclick="addUser()">+</button>
-
-      <ul id="userList" class="list-group mt-3">
-      </ul>
     </div>
   </div>
-</div>
-</div>
-
 
   <div class="container">
     <div class="row"></div>
@@ -78,6 +75,14 @@ aria-hidden="true">
       <input type="text" id="msgTxt" placeholder="Type your message here...">
       <button id="msgBtn" onclick="module.sendMsg()">Send</button>
     </div>
+  </div>
+
+  <div id="blankMessageAlert" class="alert alert-danger alert-dismissible fade" role="alert">
+    <strong>Error:</strong>
+    <span id="blankMessageAlertText"></span>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
   </div>
 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -162,8 +167,8 @@ aria-hidden="true">
     addBoardWithCurrentEmail(boardName)
   }
 
-  function addUser() {
-    var userEmail = $('#userEmail').val();
+    function addUser() {
+      var userEmail = $('#userEmail').val();
 
     if (userEmail !== '') {
       $('#userList').append('<li class="list-group-item">' + userEmail +
@@ -175,12 +180,37 @@ aria-hidden="true">
 
   }
 
-  function removeUser(button) {
-    $(button).closest('li').remove();
-  }
-</script>
+    function removeUser(button) {
+      $(button).closest('li').remove();
+    }
+  </script>
 
+  <script>
+    module.sendMsg = function sendMsg() {
+      var msg = msgTxt.value.trim();
+
+      if (msg !== "") {
+        var timestamp = new Date().getTime();
+        set(ref(db, "messages/" + timestamp), {
+          msg: msg,
+          sender: sender,
+          boardId: selectedBoard.id 
+        });
+
+        msgTxt.value = "";
+      } else {
+        // Display Bootstrap alert for blank message
+        $('#blankMessageAlert').alert();
+        $('#blankMessageAlert').html("We don't like blank messages");
+        $('#blankMessageAlert').addClass('show');
+
+        // Hide the alert after a certain duration (e.g., 3 seconds)
+        setTimeout(function() {
+          $('#blankMessageAlert').removeClass('show');
+        }, 3000);
+      }
+    };
+  </script>
 </body>
 
 </html>
-

@@ -74,23 +74,11 @@ const apiRequests = {
     
     return await response.json();
   },
-
-  async getBoardsByEmail() {
-    const userEmail = sessionStorage.getItem('userEmail') ?? "grunet01@luther.edu";
-    if (!userEmail) {
-      throw new Error('User email not found in sessionStorage');
-    }
+  
+  async getBoardsByEmail(userEmail) {
     const url = `${BASE_URL}/boards/${userEmail}`;
-    try {
-      const response = await fetch(url);
-      if (!response.ok) {
-        throw new Error(`Error fetching boards. Status: ${response.status}`);
-      }
-      return await response.json();
-    } catch (error) {
-      console.error('Error in getBoardsByEmail:', error.message);
-      throw error; 
-    }
+    const response = await fetch(url);
+    return await response.json();
   },
 
   async getTablesByBoardId(boardId) {
