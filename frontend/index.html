@@ -120,8 +120,7 @@ aria-hidden="true">
         if(sessionStorage.getItem('sender')){
             sender = sessionStorage.getItem('sender');
         } else {
-            sender = prompt('PLEASE ENTER YOUR NAME');
-            sessionStorage.setItem('sender',sender);
+           window.location.href = "local.html";
         }
 
 
