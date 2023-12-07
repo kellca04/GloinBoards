@@ -7,10 +7,6 @@ var tables = null;
 
 initialize()
 
-setInterval(function(){
-  initialize()
-}, 15000)
-
 
 function initialize() {
   // Initialize list of all boards for current user
