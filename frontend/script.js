@@ -9,7 +9,6 @@ initialize()
 
 
 function initialize() {
-  // Initialize list of all boards for current user
   import(requestScriptPath)
     .then(module => {
       const apiRequests = module.default;
