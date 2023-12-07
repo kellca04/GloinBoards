@@ -1,99 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>cs330 final</title>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
-  <link rel="stylesheet" href="style.css">
-</head>
-
-<body>
-
-  <nav class="navbar navbar-expand-lg navbar-dark">
-    <select 
-      class="form-select form-select-lg mb-3" 
-      aria-label="Large select example"
-      id="selectBoard"
-      onchange="setCurrentBoard(this.value)"
-      >
-    </select>
-    <button class="btn btn-primary" data-toggle="modal" data-target="#addBoardModal">Add New Board</button>
-    <button class="btn btn-success" data-toggle="modal" data-target="#manageUsersModal">Manage Users</button>
-  </nav>
-
-  <div class="modal fade" id="addBoardModal" tabindex="-1" role="dialog" aria-labelledby="addBoardModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="addBoardModalLabel">Add New Board</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <div class="form-group">
-            <label for="boardName">Board Name</label>
-            <input type="text" class="form-control" id="boardName" placeholder="Enter board name">
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary" onclick="addBoard()">+</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal fade" id="manageUsersModal" tabindex="-1" role="dialog" aria-labelledby="manageUsersModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-body">
-          <div class="form-group">
-            <label for="userEmail">User Email</label>
-            <input type="email" class="form-control" id="userEmail" placeholder="Enter user email">
-          </div>
-          <button type="button" class="btn btn-success" onclick="addUser()">+</button>
-          <ul id="userList" class="list-group mt-3">
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="container">
-    <div class="row"></div>
-  </div>
-
-  <div class="live-chat-placeholder" id="liveChatContainer">
-    <div id="messages"></div>
-    <div id="sendMsg">
-      <input type="text" id="msgTxt" placeholder="Type your message here...">
-      <button id="msgBtn" onclick="module.sendMsg()">Send</button>
-    </div>
-  </div>
-
-  <div id="blankMessageAlert" class="alert alert-danger alert-dismissible fade" role="alert">
-    <strong>Error:</strong>
-    <span id="blankMessageAlertText"></span>
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/dragula@3.7.3/dist/dragula.min.js"></script>
-  <script src="script.js"></script>
-  <script src="request.js" type="module"></script>
-  <script>
-    module = {};
-  </script>
-  <script type="module">
+<script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getDatabase, ref, set, remove, onChildAdded, onChildRemoved } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
@@ -105,16 +10,12 @@
         messagingSenderId: "1064408443437",
         appId: "1:1064408443437:web:b69c8af6e49cbed6a066a4"
     };
-
+  
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // variables
     var msgTxt = document.getElementById('msgTxt');
-    var messages = document.getElementById('messages');  // Assuming you have an element with the id 'messages'
     var sender;
-
-    var selectedBoard = { id: "yourDefaultBoardId" };
 
     if (sessionStorage.getItem('sender')) {
         sender = sessionStorage.getItem('sender');
@@ -123,103 +24,36 @@
     }
 
     module.sendMsg = function sendMsg() {
-        var msg = msgTxt.value.trim();
+        var msg = msgTxt.value.trim(); // Trim to remove leading and trailing whitespaces
 
         if (msg !== "") {
             var timestamp = new Date().getTime();
             set(ref(db, "messages/" + timestamp), {
                 msg: msg,
-                sender: sender,
-                boardId: selectedBoard.id  // Set the boardId when saving the message
+                sender: sender
             });
 
             msgTxt.value = "";
         } else {
             alert("Please enter a non-empty message before sending.");
+            console.log("Empty message detected. Message not sent.");
         }
     }
 
     onChildAdded(ref(db, "messages"), (data) => {
-        // Clear existing messages when the board changes
-        messages.innerHTML = "";
-
-        // Display messages only if boardId matches selectedBoard.id
-        if (data.val().boardId === selectedBoard.id) {
-            if (data.val().sender == sender) {
-                messages.innerHTML += "<div style=justify-content:end class=outer id=" + data.key + "><div id=inner class=me>you : " + data.val().msg + "<button id=dltMsg onclick=module.dltMsg(" + data.key + ")>X</button></div></div>";
-            } else {
-                messages.innerHTML += "<div class=outer id=" + data.key + "><div id=inner class=notMe>" + data.val().sender + " : " + data.val().msg + "</div></div>";
-            }
+        if (data.val().sender == sender) {
+            messages.innerHTML += "<div style=justify-content:end class=outer id=" + data.key + "><div id=inner class=me>you : " + data.val().msg + "<button id=dltMsg onclick=module.dltMsg(" + data.key + ")>X</button></div></div>";
+        } else {
+            messages.innerHTML += "<div class=outer id=" + data.key + "><div id=inner class=notMe>" + data.val().sender + " : " + data.val().msg + "</div></div>";
         }
     });
 
     module.dltMsg = function dltMsg(key) {
         remove(ref(db, "messages/" + key));
-    };
+    }
 
     onChildRemoved(ref(db, "messages"), (data) => {
         var msgBox = document.getElementById(data.key);
         messages.removeChild(msgBox);
     });
-
 </script>
-
-
-
-<script>
-  function addBoard() {
-    var boardName = $('#boardName').val();
-    $('#boardsDropdownMenu').append('<a class="dropdown-item" href="#">' + boardName + '</a>');
-    $('#boardName').val('');
-    $('#addBoardModal').modal('hide');
-
-    addBoardWithCurrentEmail(boardName)
-  }
-
-    function addUser() {
-      var userEmail = $('#userEmail').val();
-
-    if (userEmail !== '') {
-      $('#userList').append('<li class="list-group-item">' + userEmail +
-        ' <button class="btn btn-danger btn-sm float-right" onclick="removeUser(this)">X</button></li>');
-      $('#userEmail').val('');
-      
-      addUserToCurrentBoard(userEmail)
-    }
-
-  }
-
-    function removeUser(button) {
-      $(button).closest('li').remove();
-    }
-  </script>
-
-  <script>
-    module.sendMsg = function sendMsg() {
-      var msg = msgTxt.value.trim();
-
-      if (msg !== "") {
-        var timestamp = new Date().getTime();
-        set(ref(db, "messages/" + timestamp), {
-          msg: msg,
-          sender: sender,
-          boardId: selectedBoard.id 
-        });
-
-        msgTxt.value = "";
-      } else {
-     
-        $('#blankMessageAlert').alert();
-        $('#blankMessageAlert').html("We don't like blank messages");
-        $('#blankMessageAlert').addClass('show');
-
-        
-        setTimeout(function() {
-          $('#blankMessageAlert').removeClass('show');
-        }, 3000);
-      }
-    };
-  </script>
-</body>
-
-</html>
