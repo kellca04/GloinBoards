@@ -16,11 +16,9 @@ function initialize() {
 
       apiRequests.getBoardsByEmail(userEmail)
         .then(allBoards => {
-          console.log("Boards: ");
-          console.log(allBoards);
 
           if (allBoards.error) { 
-            allBoards = ["Please create a board"];
+            allBoards = [];
           }
 
           boards = allBoards;
@@ -44,7 +42,9 @@ function initialize() {
               menu.append(opt);
           });
 
-          setCurrentBoard(useLastBoard ? lastBoardId : allBoards[0].id);
+          if (!allBoards.error) {
+            setCurrentBoard(useLastBoard ? lastBoardId : allBoards[0].id);
+          }
 
         })
         .catch(error => {
