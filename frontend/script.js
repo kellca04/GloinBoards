@@ -49,6 +49,7 @@ function updateAndRenderTables() {
         apiRequests.getTablesByBoardId(selectedBoard.id)
           .then(allTables => {
 
+            allTables.sort((a,b) => a.id - b.id);
             tables = allTables;
             renderBoard();
 
