@@ -199,12 +199,12 @@
 
         msgTxt.value = "";
       } else {
-        // Display Bootstrap alert for blank message
+     
         $('#blankMessageAlert').alert();
         $('#blankMessageAlert').html("We don't like blank messages");
         $('#blankMessageAlert').addClass('show');
 
-        // Hide the alert after a certain duration (e.g., 3 seconds)
+        
         setTimeout(function() {
           $('#blankMessageAlert').removeClass('show');
         }, 3000);
