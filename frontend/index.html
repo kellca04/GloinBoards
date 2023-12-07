@@ -109,49 +109,84 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    var msgTxt = document.getElementById('msgTxt');
-    var sender;
 
-    if (sessionStorage.getItem('sender')) {
-        sender = sessionStorage.getItem('sender');
-    } else {
-        window.location.href = 'login.html';
-    }
+        // Global variables
+        var msgTxt = document.getElementById('msgTxt');
+        var messages = document.getElementById('messages');
+        var sender;
 
-    module.sendMsg = function sendMsg() {
-        var msg = msgTxt.value.trim(); // Trim to remove leading and trailing whitespaces
+        // Default board
+        var selectedBoard = { id: "yourDefaultBoardId" };
 
-        if (msg !== "") {
-            var timestamp = new Date().getTime();
-            set(ref(db, "messages/" + timestamp), {
-                msg: msg,
-                sender: sender
-            });
-
-            msgTxt.value = "";
+        // Check if sender is set, otherwise redirect to login
+        if (sessionStorage.getItem('sender')) {
+            sender = sessionStorage.getItem('sender');
         } else {
-            alert("Please enter a non-empty message before sending.");
-            console.log("Empty message detected. Message not sent.");
+            window.location.href = 'login.html';
         }
-    }
 
-    onChildAdded(ref(db, "messages"), (data) => {
-        if (data.val().sender == sender) {
-            messages.innerHTML += "<div style=justify-content:end class=outer id=" + data.key + "><div id=inner class=me>you : " + data.val().msg + "<button id=dltMsg onclick=module.dltMsg(" + data.key + ")>X</button></div></div>";
-        } else {
-            messages.innerHTML += "<div class=outer id=" + data.key + "><div id=inner class=notMe>" + data.val().sender + " : " + data.val().msg + "</div></div>";
+        // Function to send a message
+        module.sendMsg = function sendMsg() {
+            var msg = msgTxt.value.trim();
+
+            if (msg !== "") {
+                var timestamp = new Date().getTime();
+                set(ref(db, "messages/" + timestamp), {
+                    msg: msg,
+                    sender: sender,
+                    boardId: selectedBoard.id
+                });
+
+                msgTxt.value = "";
+            } else {
+                alert("Please enter a non-empty message before sending.");
+            }
         }
-    });
 
-    module.dltMsg = function dltMsg(key) {
-        remove(ref(db, "messages/" + key));
-    }
+        // Event listener for added messages
+        onChildAdded(ref(db, "messages"), (data) => {
+            // Display messages only if boardId matches selectedBoard.id
+            if (data.val().boardId === selectedBoard.id) {
+                if (data.val().sender == sender) {
+                    messages.innerHTML += `<div style="justify-content:end" class="outer" id="${data.key}">
+                        <div id="inner" class="me">you: ${data.val().msg}
+                            <button id="dltMsg" onclick="module.dltMsg(${data.key})">X</button>
+                        </div>
+                    </div>`;
+                } else {
+                    messages.innerHTML += `<div class="outer" id="${data.key}">
+                        <div id="inner" class="notMe">${data.val().sender}: ${data.val().msg}</div>
+                    </div>`;
+                }
+            }
+        });
 
-    onChildRemoved(ref(db, "messages"), (data) => {
-        var msgBox = document.getElementById(data.key);
-        messages.removeChild(msgBox);
-    });
-</script>
+        // Function to delete a message
+        module.dltMsg = function dltMsg(key) {
+            remove(ref(db, "messages/" + key));
+        };
+
+        // Event listener for removed messages
+        onChildRemoved(ref(db, "messages"), (data) => {
+            var msgBox = document.getElementById(data.key);
+            messages.removeChild(msgBox);
+        });
+
+        // Function to check for board ID changes
+        function checkBoardId() {
+            // Check if the selectedBoard.id has changed, and update messages accordingly
+            if (selectedBoard.id !== lastCheckedBoardId) {
+                lastCheckedBoardId = selectedBoard.id;
+                // Clear existing messages when the board changes
+                messages.innerHTML = "";
+            }
+        }
+
+        // Interval to check for board ID changes
+        var lastCheckedBoardId = selectedBoard.id; // Initial value
+        setInterval(checkBoardId, 1000); // Adjust the interval as needed
+    </script>
+
 
 
 
@@ -212,3 +247,4 @@
 </body>
 
 </html>
+
