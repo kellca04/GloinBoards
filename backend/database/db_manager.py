@@ -29,6 +29,8 @@ def insert_test_data():
         board_main, site_features, table_features, upcoming_features
     ])
 
+    session.commit()
+
     session.refresh(site_features)
     upsert_entry(site_features.id, "Site Global Live Chat")
     upsert_entry(site_features.id, "Create New Private Boards")
