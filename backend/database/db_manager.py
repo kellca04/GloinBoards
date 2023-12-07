@@ -217,15 +217,14 @@ def update_entry_table(entry_id, new_table_id, position):
 
     old_table.order = removed_entry_order
 
-    inserted_entry_order = new_table[:position]
+    inserted_entry_order = new_table.order[:position]
     inserted_entry_order.append(entry_id)
-    inserted_entry_order.extend(new_table[position:])
-
+    inserted_entry_order.extend(new_table.order[position:])
 
     new_table.order = None
     session.commit()
-    session.refresh(new_table)
 
+    session.refresh(new_table)
     new_table.order = inserted_entry_order
 
     if entry and new_table:
