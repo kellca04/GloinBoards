@@ -10,4 +10,4 @@ typing_extensions==4.8.0
 Werkzeug==3.0.1
 flask_cors==4.0.0
 gunicorn==21.0.1
-psycogp2==2.9.9
+psycopg2==2.9.9
