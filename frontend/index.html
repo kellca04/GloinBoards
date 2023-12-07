@@ -13,26 +13,16 @@
 <body>
 
   <nav class="navbar navbar-expand-lg navbar-dark">
-    
-
-      <div class="dropdown">
-        <button class="btn btn-secondary dropdown-toggle" type="button" id="boardsDropdown" data-toggle="dropdown"
-          aria-haspopup="true" aria-expanded="false">
-          Boards
-        </button>
-        <div class="dropdown-menu" aria-labelledby="boardsDropdown" id="boardsDropdownMenu">
-
-        </div>
-      </div>
-
-
-      <button class="btn btn-primary" data-toggle="modal" data-target="#addBoardModal">Add New Board</button>
-
-      <button class="btn btn-success" data-toggle="modal" data-target="#manageUsersModal">Manage Users</button>
-
-    
+    <select 
+      class="form-select form-select-lg mb-3" 
+      aria-label="Large select example"
+      id="selectBoard"
+      onchange="setCurrentBoard(this.value)"
+      >
+    </select>
+    <button class="btn btn-primary" data-toggle="modal" data-target="#addBoardModal">Add New Board</button>
+    <button class="btn btn-success" data-toggle="modal" data-target="#manageUsersModal">Manage Users</button>
   </nav>
-
 
   <div class="modal fade" id="addBoardModal" tabindex="-1" role="dialog" aria-labelledby="addBoardModalLabel"
     aria-hidden="true">
@@ -58,24 +48,22 @@
     </div>
   </div>
 
-<div class="modal fade" id="manageUsersModal" tabindex="-1" role="dialog" aria-labelledby="manageUsersModalLabel"
-aria-hidden="true">
-<div class="modal-dialog" role="document">
-  <div class="modal-content">
-    <div class="modal-body">
-      <div class="form-group">
-        <label for="userEmail">User Email</label>
-        <input type="email" class="form-control" id="userEmail" placeholder="Enter user email">
+  <div class="modal fade" id="manageUsersModal" tabindex="-1" role="dialog" aria-labelledby="manageUsersModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="userEmail">User Email</label>
+            <input type="email" class="form-control" id="userEmail" placeholder="Enter user email">
+          </div>
+          <button type="button" class="btn btn-success" onclick="addUser()">+</button>
+          <ul id="userList" class="list-group mt-3">
+          </ul>
+        </div>
       </div>
-      <button type="button" class="btn btn-success" onclick="addUser()">+</button>
-
-      <ul id="userList" class="list-group mt-3">
-      </ul>
     </div>
   </div>
-</div>
-</div>
-
 
   <div class="container">
     <div class="row"></div>
@@ -87,6 +75,14 @@ aria-hidden="true">
       <input type="text" id="msgTxt" placeholder="Type your message here...">
       <button id="msgBtn" onclick="module.sendMsg()">Send</button>
     </div>
+  </div>
+
+  <div id="blankMessageAlert" class="alert alert-danger alert-dismissible fade" role="alert">
+    <strong>Error:</strong>
+    <span id="blankMessageAlertText"></span>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
   </div>
 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -123,7 +119,7 @@ aria-hidden="true">
     if (sessionStorage.getItem('sender')) {
         sender = sessionStorage.getItem('sender');
     } else {
-     window.location.href = 'login.html';
+       window.location.href = 'login.html';
     }
 
     module.sendMsg = function sendMsg() {
@@ -167,23 +163,54 @@ aria-hidden="true">
     $('#boardsDropdownMenu').append('<a class="dropdown-item" href="#">' + boardName + '</a>');
     $('#boardName').val('');
     $('#addBoardModal').modal('hide');
+
+    addBoardWithCurrentEmail(boardName)
   }
 
-  function addUser() {
-    var userEmail = $('#userEmail').val();
+    function addUser() {
+      var userEmail = $('#userEmail').val();
 
     if (userEmail !== '') {
       $('#userList').append('<li class="list-group-item">' + userEmail +
         ' <button class="btn btn-danger btn-sm float-right" onclick="removeUser(this)">X</button></li>');
       $('#userEmail').val('');
+      
+      addUserToCurrentBoard(userEmail)
     }
+
   }
 
-  function removeUser(button) {
-    $(button).closest('li').remove();
-  }
-</script>
+    function removeUser(button) {
+      $(button).closest('li').remove();
+    }
+  </script>
 
+  <script>
+    module.sendMsg = function sendMsg() {
+      var msg = msgTxt.value.trim();
+
+      if (msg !== "") {
+        var timestamp = new Date().getTime();
+        set(ref(db, "messages/" + timestamp), {
+          msg: msg,
+          sender: sender,
+          boardId: selectedBoard.id 
+        });
+
+        msgTxt.value = "";
+      } else {
+     
+        $('#blankMessageAlert').alert();
+        $('#blankMessageAlert').html("We don't like blank messages");
+        $('#blankMessageAlert').addClass('show');
+
+        
+        setTimeout(function() {
+          $('#blankMessageAlert').removeClass('show');
+        }, 3000);
+      }
+    };
+  </script>
 </body>
 
 </html>
