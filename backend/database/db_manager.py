@@ -144,30 +144,37 @@ def upsert_entry(table_id, text, entry_id=None):
     session = Session()
     
     entry = None
-    table = session.query(Table).filter_by(id=table_id).first()
-
-    if not table:
-        session.close()
-        return None
-
     if entry_id:
         entry = session.query(Entry).filter_by(id=entry_id).first()
         if entry:
             entry.text = text
+
     else:
+        table = session.query(Table).filter_by(id=table_id).first()
+
+        if not table:
+            session.close()
+            return None
+        
         new_entry = Entry(text=text, table=table)
         session.add(new_entry)
-        session.commit()
-        session.refresh(new_entry)
 
-        if table.order is None:
-            table.order = []
-        
-        table.order.append(new_entry.id)
         session.commit()
+
+        session.refresh(new_entry)
+        new_order = table.order
+
+        table.order = None
+        session.commit()
+        session.refresh(table)
+
+        new_order.append(new_entry.id)
+        table.order = new_order
+        
 
     response = {'id': new_entry.id, 'text': new_entry.text}
     
+    session.commit()
     session.close()
 
     return response
