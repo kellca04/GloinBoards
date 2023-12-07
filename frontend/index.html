@@ -127,21 +127,26 @@
 
         // Function to send a message
         module.sendMsg = function sendMsg() {
-            var msg = msgTxt.value.trim();
+    var msg = msgTxt.value.trim();
 
-            if (msg !== "") {
-                var timestamp = new Date().getTime();
-                set(ref(db, "messages/" + timestamp), {
-                    msg: msg,
-                    sender: sender,
-                    boardId: selectedBoard.id
-                });
+    if (msg !== "") {
+      var timestamp = new Date().getTime();
+      set(ref(db, "messages/" + timestamp), {
+        msg: msg,
+        sender: sender,
+        boardId: selectedBoard.id 
+      });
 
-                msgTxt.value = "";
-            } else {
-                alert("Please enter a non-empty message before sending.");
-            }
-        }
+      msgTxt.value = "";
+    } else {
+      $('#blankMessageAlertText').html("We don't like blank messages");
+      $('#blankMessageAlert').addClass('show');
+
+      setTimeout(function() {
+        $('#blankMessageAlert').removeClass('show');
+      }, 3000);
+    }
+  };
 
         // Event listener for added messages
         onChildAdded(ref(db, "messages"), (data) => {
