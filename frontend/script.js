@@ -19,7 +19,7 @@ function initialize() {
           console.log("Boards: ");
           console.log(allBoards);
 
-          if (!allBoards) { 
+          if (allBoards.error) { 
             allBoards = ["Please create a board"];
           }
 
