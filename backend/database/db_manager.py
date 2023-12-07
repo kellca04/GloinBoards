@@ -107,7 +107,8 @@ def get_tables(board_id):
         table_data = {
             'id': table.id,
             'name': table.name,
-            'entries': [{'id': entry.id, 'text': entry.text} for entry in table.entries]
+            'entries': [{'id': entry.id, 'text': entry.text} for entry in table.entries],
+            'order': table.order
         }
         tables_with_entries.append(table_data)
 
@@ -187,13 +188,17 @@ def upsert_entry(table_id, text, entry_id=None):
         new_entry = Entry(text=text, table=table)
         session.add(new_entry)
         entry = new_entry
+
+        session.commit()
+        
+        session.refresh(entry)
+        table.order.append(entry.id)
+        
+
     
     session.commit()
-
-    if entry:
-        session.refresh(entry)
-    
     session.close()
+
     return entry
 
 
