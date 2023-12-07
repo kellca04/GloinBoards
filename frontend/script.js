@@ -119,7 +119,6 @@ function addTableElement(table) {
         </button>
         <div class="card-header d-flex justify-content-center">
           <h4 
-            contenteditable="true"
             id="table-${table.id}-hdr"
             ondblclick="editTable(${table.id}, this)" 
             class="w-75">
