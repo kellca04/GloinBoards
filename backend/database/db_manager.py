@@ -92,7 +92,7 @@ def get_boards_by_email(email):
     session = Session()
 
     boards = session.query(Board).filter(Board.emails.contains([email])).all()
-    global_boards = session.query(Board).filter("(Global)" in Board.name).all()
+    global_boards = session.query(Board).filter(Board.name.contains("(Global)")).all()
 
     for board in global_boards:
         boards.append(board)
