@@ -91,15 +91,23 @@ def get_boards_by_email(email):
     Session = sessionmaker(bind=engine)
     session = Session()
 
-    boards = session.query(Board).filter(Board.emails.contains([email])).all()
-    global_boards = session.query(Board).filter(Board.name.contains("(Global)")).all()
+    user_boards = session.query(Board).filter(Board.emails.contains([email])).all()
+
+    global_boards = session.query(Board).filter(Board.name.icontains("(Global)")).all()
+    global_board_ids = [b.id for b in global_boards]
+
+    all_boards = []
+
+    for board in user_boards:
+        if (board.id not in global_board_ids):
+            all_boards.append(board)
 
     for board in global_boards:
-        boards.append(board)
+        all_boards.append(board)
 
     session.close()
 
-    return boards
+    return all_boards
 
 
 def get_tables(board_id):
