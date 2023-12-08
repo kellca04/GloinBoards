@@ -1,6 +1,5 @@
 function logout() {
-           
-            sessionStorage.clear();          
-            location.reload();
-        }
-initialize()
+    
+    sessionStorage.clear();          
+    location.reload();
+}
