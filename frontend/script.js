@@ -4,7 +4,11 @@ var boards = null;
 var selectedBoard = null;
 var tables = null;
 
-
+function logout() {
+           
+            sessionStorage.clear();          
+            location.reload();
+        }
 initialize()
 
 
