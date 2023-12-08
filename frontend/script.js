@@ -5,7 +5,7 @@ var selectedBoard = null;
 var tables = null;
 
 
-
+initialize()
 
 function initialize() {
   import(requestScriptPath)

@@ -33,6 +33,7 @@ def insert_test_data():
     upsert_entry(site_features.id, "Site Global Live Chat")
     upsert_entry(site_features.id, "Create New Private Boards")
     upsert_entry(site_features.id, "Add Other Users By Email Address to Private Boards")
+    upsert_entry(site_features.id, "Set Boards As Global By Adding (global) to Boad Name")
     upsert_entry(site_features.id, "Google Authentication")
     upsert_entry(site_features.id, "Access to Private Boards Associated with Your Account")
 
