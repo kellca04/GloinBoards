@@ -7,8 +7,6 @@ from database.db_config import *
 
 Session = sessionmaker(bind=engine)
 
-global main_board_id
-
 
 def insert_test_data():
     Session = sessionmaker(bind=engine)
@@ -49,10 +47,6 @@ def insert_test_data():
     upsert_entry(upcoming_features.id, "Delete Boards")
     upsert_entry(upcoming_features.id, "Global And Board-Specific Live Chats")
 
-    session.refresh(board_main)
-
-    global main_board_id 
-    main_board_id = board_main.id
 
     session.commit()
     session.close()
@@ -98,10 +92,10 @@ def get_boards_by_email(email):
     session = Session()
 
     boards = session.query(Board).filter(Board.emails.contains([email])).all()
-    main_board = session.query(Board).filter(Board.id == main_board_id).first()
+    global_boards = session.query(Board).filter("(Global)" in Board.name).all()
 
-    if main_board:
-        boards.append(main_board)
+    for board in global_boards:
+        boards.append(board)
 
     session.close()
 
