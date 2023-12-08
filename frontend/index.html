@@ -224,32 +224,7 @@
     }
   </script>
 
-  <script>
-    module.sendMsg = function sendMsg() {
-      var msg = msgTxt.value.trim();
-
-      if (msg !== "") {
-        var timestamp = new Date().getTime();
-        set(ref(db, "messages/" + timestamp), {
-          msg: msg,
-          sender: sender,
-          boardId: selectedBoard.id 
-        });
-
-        msgTxt.value = "";
-      } else {
-     
-        $('#blankMessageAlert').alert();
-        $('#blankMessageAlert').html("We don't like blank messages");
-        $('#blankMessageAlert').addClass('show');
-
-        
-        setTimeout(function() {
-          $('#blankMessageAlert').removeClass('show');
-        }, 3000);
-      }
-    };
-  </script>
+ 
 </body>
 
 </html>
